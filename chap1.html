@@ -202,233 +202,251 @@ Goodfellow, Yoshua Bengio, and Aaron Courville</p>
 By <a href="http://michaelnielsen.org">Michael Nielsen</a> / Dec 2019
 </p>
 </div>
-</p><p>The human visual system is one of the wonders of the world.  Consider
-the following sequence of handwritten digits: <a name="complete_zero"></a></p><p><center><img src="images/digits.png" width="160px"></center> </p><p>Most people effortlessly recognize those digits as 504192.  That ease
-is deceptive.  In each hemisphere of our brain, humans have a primary
-visual cortex, also known as V1, containing 140 million neurons, with
-tens of billions of connections between them.  And yet human vision
-involves not just V1, but an entire series of visual cortices - V2,
-V3, V4, and V5 - doing progressively more complex image processing.
-We carry in our heads a supercomputer, tuned by evolution over
-hundreds of millions of years, and superbly adapted to understand the
-visual world.  Recognizing handwritten digits isn't easy.  Rather, we
-humans are stupendously, astoundingly good at making sense of what our
-eyes show us.  But nearly all that work is done unconsciously.  And so
-we don't usually appreciate how tough a problem our visual systems
-solve.</p><p>The difficulty of visual pattern recognition becomes apparent if you
-attempt to write a computer program to recognize digits like those
-above.  What seems easy when we do it ourselves suddenly becomes
-extremely difficult.  Simple intuitions about how we recognize shapes
-- "a 9 has a loop at the top, and a vertical stroke in the bottom
-right" - turn out to be not so simple to express algorithmically.
-When you try to make such rules precise, you quickly get lost in a
-morass of exceptions and caveats and special cases.  It seems
-hopeless.</p><p></p><p>
-Neural networks approach the problem in a different way.  The idea is
-to take a large number of handwritten digits, known as training
-examples,</p><p><center><img src="images/mnist_100_digits.png" width="440px"></center></p><p>and then develop a system which can learn from those training
-examples. In other words, the neural network uses the examples to
-automatically infer rules for recognizing handwritten digits.
-Furthermore, by increasing the number of training examples, the
-network can learn more about handwriting, and so improve its accuracy.
-So while I've shown just 100 training digits above, perhaps we could
-build a better handwriting recognizer by using thousands or even
-millions or billions of training examples.</p><p>In this chapter we'll write a computer program implementing a neural
-network that learns to recognize handwritten digits.  The program is
-just 74 lines long, and uses no special neural network libraries.  But
-this short program can recognize digits with an accuracy over 96
-percent, without human intervention.  Furthermore, in later chapters
-we'll develop ideas which can improve accuracy to over 99 percent.  In
-fact, the best commercial neural networks are now so good that they
-are used by banks to process cheques, and by post offices to recognize
-addresses.</p><p>We're focusing on handwriting recognition because it's an excellent
-prototype problem for learning about neural networks in general.  As a
-prototype it hits a sweet spot: it's challenging - it's no small
-feat to recognize handwritten digits - but it's not so difficult as
-to require an extremely complicated solution, or tremendous
-computational power.  Furthermore, it's a great way to develop more
-advanced techniques, such as deep learning.  And so throughout the
-book we'll return repeatedly to the problem of handwriting
-recognition.  Later in the book, we'll discuss how these ideas may be
-applied to other problems in computer vision, and also in speech,
-natural language processing, and other domains.</p><p>Of course, if the point of the chapter was only to write a computer
-program to recognize handwritten digits, then the chapter would be
-much shorter!  But along the way we'll develop many key ideas about
-neural networks, including two important types of artificial neuron
-(the perceptron and the sigmoid neuron), and the standard learning
-algorithm for neural networks, known as stochastic gradient descent.
-Throughout, I focus on explaining <em>why</em> things are done the way
-they are, and on building your neural networks intuition.  That
-requires a lengthier discussion than if I just presented the basic
-mechanics of what's going on, but it's worth it for the deeper
-understanding you'll attain.  Amongst the payoffs, by the end of the
-chapter we'll be in position to understand what deep learning is, and
-why it matters.</p><p><h3><a name="perceptrons"></a><a href="#perceptrons">Perceptrons</a></h3></p><p>What is a neural network?  To get started, I'll explain a type of
-artificial neuron called a <em>perceptron</em>.
-Perceptrons were
-<a href="http://books.google.ca/books/about/Principles_of_neurodynamics.html?id=7FhRAAAAMAAJ">developed</a>
-in the 1950s and 1960s by the scientist
-<a href="http://en.wikipedia.org/wiki/Frank_Rosenblatt">Frank
-  Rosenblatt</a>, inspired by earlier
-<a href="http://scholar.google.ca/scholar?cluster=4035975255085082870">work</a>
-by <a href="http://en.wikipedia.org/wiki/Warren_McCulloch">Warren
-  McCulloch</a> and
-<a href="http://en.wikipedia.org/wiki/Walter_Pitts">Walter
-  Pitts</a>.  Today, it's more common to use other
-models of artificial neurons - in this book, and in much modern work
-on neural networks, the main neuron model used is one called the
-<em>sigmoid neuron</em>.  We'll get to sigmoid neurons shortly.  But to
-understand why sigmoid neurons are defined the way they are, it's
-worth taking the time to first understand perceptrons.</p><p>So how do perceptrons work?  A perceptron takes several binary inputs,
-$x_1, x_2, \ldots$, and produces a single binary output:
+</p>
+<p>
+  O sitema visual humano é uma das maravilhas do mundo. 
+  Considere a seguinte sequência de digitos manuscritos:
+<a name="complete_zero"></a>
+</p>
+<p>
+  <center>
+    <img src="images/digits.png" width="160px">
+  </center>
+ </p>
+<p>
+  A maioria das pessoas reconhece sem esforço esses digitos como sendo 504192.
+  Mas se observarmos bem, é possível perceber que esse processo de reconhecimento 
+  de digitos não é tão simples assim. Em cada hemisferio do seu cérebro, humanos tem
+  um cortex primário visual, também conhecido como V1, contendo 140 milhões de neurônios,
+  com dezenas de bilhões de conexões entre eles. E a visão humana não envolve apenas V1,
+  mas uma série de cortex visuais - V2, V3, V4 e V5 - que fazem um processamento de imagem
+  progressivamente mais complexo. Nós carregamos em nossas cabeças um supercomputador, 
+  que foi condicionado pela evolução ao longo de milhões de anos, e se tornou absurdamente
+  adaptado em entender o mundo visual. Reconhecer digitos manuscritos não é fácil. A questão 
+  é que nós humanos somos incrívelmente bons em fazer isso que boa parte desse trabalho é feito
+  inconcientemente. E por conta disso nós não apreciamos o quão difícil é o problema que nosso
+  sistema visual tem que resolver. 
+</p>
+<p>
+  A dificuldade de reconhecimento de padrões visuais se torna aparente quando você tenta escrever
+  um programa de computador que reconheça digitos como esses acima. Algo que parece fácil quando 
+  nós mesmos fazemos derepente se torna extremamente difícil. Intuições simples sobre como nós 
+  reconhecemosformas - "um 9 tem uma volta no topo, e uma linha vertical em baixo a direita" - 
+  se mostram não tão simples de serem expressas em um algoritmo. Quando se tenta fazer essas 
+  regras de forma precisa, você rapidamente se perde em um mar de exceções e casos especiais.
+</p>
+<p></p>
+<p>
+  Redes Neurais abordam o problema de uma forma diferente. A ideia é de pegar um grande número de 
+  dígitos escritos há mão, conhecidos como exemplos de treino,
+</p>
+<p><center><img src="images/mnist_100_digits.png" width="440px"></center>
+</p>
+<p>
+  e então desenvolver um sistema que consiga aprender a partir desses exemplos de treino. Em outras
+  palavras, a rede neural usa os exemplos para automaticamente definir regras para o reconhecimento
+  de dígitos manuscritos. Além disso, se aumentaros o número de exemplos de treino, a rede neural
+  consegue aprender mais sobre dígitos manuscritos, e então melhoras sua precisão. Foram mostrados 
+  100 dígitos de treino acima, talvez nós poderiamos construir um reconhecedor de dígitos manuscritos
+  ainda melhor se estivessimos usando milhares o até mesmo milhões ou bilhões de exemplos de treino.
+</p>
+<p>
+  Nesse capítulo nós iremos escrever um programa de computador implementando uma rede neural que 
+  reconhece dígitos manuscritos. O programa tem apenas 74 linhas, e não usa nenhuma biblioteca
+  especial para redes neurais. Mas esse pequeno programa pode reconhecer dígitos manuscritos com 
+  uma precisão de 96%, sem intervenção humana. Além disso, em capítulos posteriores nós iremos
+  desenvolver ideias que podem melhorar a precisão desse programa para níveis acimp de 99%. Na verdade, 
+  as melhores redes neurais comerciais são agora tão boas que elas são usadas em bancos para processar
+  cheques, e serviços postais para reconhecer endereços.
+</p>
+<p>
+  Nós iremos focar em reconhecimento de manuscritos porque é um problema prototipo excelente para aprender
+  redes neurais no geral. Como prototipo ele é perfeito: é desafiador - como já vimos não é algo simples
+  reconhecer digitos manuscritos - mas também não é difícil ao ponto de demandar uma solução extremamente
+  complicada, ou um poder computacional gigantesco. Além disso, é uma ótima forma de desenvolver técnicas
+  mais avançadas como deep learning. Portanto, ao longo desse livro nós iremos retornar repetidamente para 
+  o problema de reconhecimento de dígitos manuscritos. Em capítulos mais avançados iremos discutir como esssas
+  ideias podem ser aplicadas em outros problemas como visão conputacional, e também processamento de fala,
+  e texto, e outros dominios.
+</p>
+<p>
+  Se o ponto desse capítulo fosse apenas escrever um programa de computador para reconhecer digitos manuscritos
+  esse capitulo seria muito menor, não é mesmo? Mas ao longo do caminho nós iremos desenvolver várias ideias 
+  chave sobre redes neurais, inclusive dois  tipos importantes de neurônios artificiais (o perceptron e o 
+  neurônio sigmoid), e o também o algoritmo de aprendizado padrão para redes neurais, conhecido como 
+  gradiente stocástico descedente. Ao longo do livro, eu irei focar em explicar o <em>porquê</em> as coisas 
+  são feitas do jeito que são, e em construir sua intuição em redes neurais. Para abordar tudo isso dessa forma
+  é necessária uma discusslão mais longa do que se fosse apresentado apenas as mecanicas básicas de como tudo 
+  está acontecendo, mas vale a pena se levarmos em conta o entendimento profundo que irá trazer para você.
+  Até o final desse capítulo você estará na posição de entender o que deep learning é.
+</p>
+<p>
+  <h3>
+    <a name="perceptrons"></a>
+    <a href="#perceptrons">Perceptrons</a>
+  </h3>
+</p>
+<p>
+  O que é uma rede neural? Para começar, eu irei explicaar um tipo de neurônio artificial chamado 
+  <em>perceptron</em>. Perceptrons foram 
+  <a href="http://books.google.ca/books/about/Principles_of_neurodynamics.html?id=7FhRAAAAMAAJ">
+    desenvolvidos</a>
+  nos anos 50 e 60 pelo cientista 
+  <a href="http://en.wikipedia.org/wiki/Frank_Rosenblatt">Frank Rosenblatt</a>
+  , inspirado por 
+  <a href="http://scholar.google.ca/scholar?cluster=4035975255085082870">trabalhos anteriores </a> 
+  de  
+  <a href="http://en.wikipedia.org/wiki/Warren_McCulloch">Warren McCulloch</a> 
+  e  
+  <a href="http://en.wikipedia.org/wiki/Walter_Pitts"> WalterPitts</a>. 
+  Hoje em dia é mais comum usar um outro modelo de neurônio artificial - neste livro, e em muitos livros
+  modernos sobre redes neurais, o modelo principal usado é um chamado <em>neurônio sigmoid</em> Nós iremos 
+  abordar os neurônios sigmoids em breve. Mas para entender o por quê dos neurônios sigmoids serem definidos
+  do jeito que são, vale a pena entender perceptrons antes.
+</p>
+<p>
+  Então como perceprons funcionam? Um perceptron recebe várias entradas binárias, $x_1, x_2, \ldots$, e 
+  produz uma saída binária: 
 <center>
 <img src="images/tikz0.png"/>
 </center>
-In the example shown the perceptron has three inputs, $x_1, x_2, x_3$.
-In general it could have more or fewer inputs.  Rosenblatt proposed a
-simple rule to compute the output.  He introduced
-<em>weights</em>, $w_1,w_2,\ldots$, real numbers
-expressing the importance of the respective inputs to the output.  The
-neuron's output, $0$ or $1$, is determined by whether the weighted sum
-$\sum_j w_j x_j$ is less than or greater than some <em>threshold
-  value</em>.  Just like the weights, the
-threshold is a real number which is a parameter of the neuron.  To put
-it in more precise algebraic terms:
-<a class="displaced_anchor" name="eqtn1"></a>\begin{eqnarray}
+Esse exemplo mostra um perceptron que recebe três entradas, $x_1, x_2, x_3$. Em geral ele poderia ter mais 
+ou menos entradas. Rsenblatt propós uma regra simples para calcular a saída. Ele introduziu <em>pesos</em>
+, $w_1,w_2,\ldots$, números reais que expressam a importância dos respectivos valores de entrada para o 
+valor de saída. A saída do neurônio, $0$ or $1$, é determindada se a soma ponderada $\sum_j w_j x_j$ é menor
+ou mair do que um certo <em>valor limite </em>. Assim como os pesos, o limite é um número real que é 
+um parametro do neuônio. Colocando isso em termos mais algébricos:
+  <a class="displaced_anchor" name="eqtn1"></a>\begin{eqnarray}
   \mbox{output} & = & \left\{ \begin{array}{ll}
       0 & \mbox{if } \sum_j w_j x_j \leq \mbox{ threshold} \\
       1 & \mbox{if } \sum_j w_j x_j > \mbox{ threshold}
       \end{array} \right.
 \tag{1}\end{eqnarray}
-That's all there is to how a perceptron works!</p><p>That's the basic mathematical model.  A way you can think about the
-perceptron is that it's a device that makes decisions by weighing up
-evidence.  Let me give an example.  It's not a very realistic example,
-but it's easy to understand, and we'll soon get to more realistic
-examples.  Suppose the weekend is coming up, and you've heard that
-there's going to be a cheese festival in your city.  You like cheese,
-and are trying to decide whether or not to go to the festival.  You
-might make your decision by weighing up three factors:
+
+  E basicamente é assim que perceptrons funcionam!
+</p>
+<p>
+  Esse é o modelo matemático básico. Uma maneira de interpretar o perceptron é pensar nele como se fosse um
+  dispositivo que toma decisões através da adição de pesos as evidências que estão sendo usadas para realizar
+  essa tomada de decisão. Deixe-me exemplicar essa idea. Não é um exemplo muito realístico, mas é fácil de 
+  entender, e em breve iremos abordar exemplos mais realistas. Suponha que o fim de semana está chegando
+  e você ouviu que vai acontecer um festival de queijo na sua cidade(não sei o que o autor tava pensando com 
+  um exemplo desses mas ok). Você gosta de queijo, e está tentando decidir entre ir ou não no festival. Estando
+  nessa situação talvez você tenha que tomar essa decisão <em>pesando</em> três fatores:
 <ol>
-<li> Is the weather good?
-<li> Does your boyfriend or girlfriend want to accompany you?
-<li> Is the festival near public transit? (You don't own a car).
+  <li> O clima no dia é propicio?
+  <li> Sua namorada ou namorado vai querer ir com você?
+  <li> O festival é próximo de algum transporte público?(você não tem um carro :/)
 </ol>
-We can represent these three factors by corresponding binary variables
-$x_1, x_2$, and $x_3$.  For instance, we'd have $x_1 = 1$ if the
-weather is good, and $x_1 = 0$ if the weather is bad.  Similarly, $x_2
-= 1$ if your boyfriend or girlfriend wants to go, and $x_2 = 0$ if
-not.  And similarly again for $x_3$ and public transit.</p><p>Now, suppose you absolutely adore cheese, so much so that you're happy
-to go to the festival even if your boyfriend or girlfriend is
-uninterested and the festival is hard to get to.  But perhaps you
-really loathe bad weather, and there's no way you'd go to the festival
-if the weather is bad.  You can use perceptrons to model this kind of
-decision-making.  One way to do this is to choose a weight $w_1 = 6$
-for the weather, and $w_2 = 2$ and $w_3 = 2$ for the other conditions.
-The larger value of $w_1$ indicates that the weather matters a lot to
-you, much more than whether your boyfriend or girlfriend joins you, or
-the nearness of public transit.  Finally, suppose you choose a
-threshold of $5$ for the perceptron.  With these choices, the
-perceptron implements the desired decision-making model, outputting
-$1$ whenever the weather is good, and $0$ whenever the weather is bad.
-It makes no difference to the output whether your boyfriend or
-girlfriend wants to go, or whether public transit is nearby.</p><p>By varying the weights and the threshold, we can get different models
-of decision-making.  For example, suppose we instead chose a threshold
-of $3$.  Then the perceptron would decide that you should go to the
-festival whenever the weather was good <em>or</em> when both the
-festival was near public transit <em>and</em> your boyfriend or
-girlfriend was willing to join you.  In other words, it'd be a
-different model of decision-making.  Dropping the threshold means
-you're more willing to go to the festival.</p><p>Obviously, the perceptron isn't a complete model of human
-decision-making!  But what the example illustrates is how a perceptron
-can weigh up different kinds of evidence in order to make decisions.
-And it should seem plausible that a complex network of perceptrons
-could make quite subtle decisions:
+  Nós podemos representar esses três fatores como valores binários correspondentes $x_1, x_2$, and $x_3$.
+  Por exemplo, nós teriamos $x_1 = 1$ se o clima no dia for propicio, e $x_1 = 0$ se seu namorado ou namorada
+  quiser ir contigo, e  $x_2 = 0$ se ele ou ela não quiser. E o mesmo acontece com $x_3$ e o transporte público.
+</p>
+<p>
+  Agora, suponha que você goste muito de queijo, tanto que você estaria feliz em ir para o festival mesmo se 
+  sua namorada ou namorado não esteja interessado(a) em ir ou se seja díficil de chegar no local do festival.
+  Mas talvez você realmente odeie tempo ruim, e você não iria ao festival se o clima do dia fossse chuvoso por
+  exemplo. Você pode usar perceptrons para modelar esse tipo de tomada de decisão. Uma maneira de fazer isso 
+  é escolhendo um peso $w_1 = 6$ para o clima, e $w_2 = 2$ e $w_3 = 2$ para as outras condições. Quanto maior
+  o valor de $w_1$ mais importante para você é a questão do clima, bem mais importante do que se o seu namorado(a)
+  te acompanhará, ou se o festival é próximo de tranporte público. Agora suponha que o valor limite é $5$ para o 
+  perceptron. Com essas escolhas, o perceptron  implementa o modelo de decisão desejado, apresentando como saída
+  $1$ sempre que o clima é bom, e $0$ sempre que o clima é ruim. Não faz diferença para a saída do perceptron
+  se o se namorado(a) quer ir, se o transporte público é perto.
+</p>
+<p>
+  Variando os pesos e o valor limite nós podemos gerar diferentes modelos de tomada de decisão. Por exemplo,
+  suponha que nós escolhamos um valor limite de $3$. Então o percepron iria decidir que você deveria ir ao 
+  festival sempre que o tempo estivesse bom <em>ou</em> quando ambos o festival estivesse perto do transporte
+  público <em>e</em> seu namorado(a) estejam dispostos a ir com você. Em outras palavras, ele seria um modelo
+  de tomada de decisão diferente. Abaixar o valor limite significa que você está mais disposto a ir ao festival
+</p>
+<p>
+  Obviamente, o perceptron não é um modelo humano completo de tomada de decisão! Mas o que o exemplo illustra
+  é como um perceptron pode pesar diferentes tipos de evidência com o objetivo de tomar decisões. E levando tudo
+  isso em conta é plausível considerar que uma rede complexa de perceptrons poderia tomar decisões que poderiam
+  ser consideradas complexas:
 <center>
 <img src="images/tikz1.png"/>
 </center>
-In this network, the first column of perceptrons - what we'll call
-the first <em>layer</em> of perceptrons - is making three very simple
-decisions, by weighing the input evidence.  What about the perceptrons
-in the second layer?  Each of those perceptrons is making a decision
-by weighing up the results from the first layer of decision-making.
-In this way a perceptron in the second layer can make a decision at a
-more complex and more abstract level than perceptrons in the first
-layer.  And even more complex decisions can be made by the perceptron
-in the third layer.  In this way, a many-layer network of perceptrons
-can engage in sophisticated decision making.</p><p>Incidentally, when I defined perceptrons I said that a perceptron has
-just a single output.  In the network above the perceptrons look like
-they have multiple outputs.  In fact, they're still single output.
-The multiple output arrows are merely a useful way of indicating that
-the output from a perceptron is being used as the input to several
-other perceptrons.  It's less unwieldy than drawing a single output
-line which then splits.</p><p>Let's simplify the way we describe perceptrons.  The condition $\sum_j
-w_j x_j > \mbox{threshold}$ is cumbersome, and we can make two
-notational changes to simplify it.
- The first change is to write
-$\sum_j w_j x_j$ as a dot product, $w \cdot x \equiv \sum_j w_j x_j$,
-where $w$ and $x$ are vectors whose components are the weights and
-inputs, respectively.  The second change is to move the threshold to
-the other side of the inequality, and to replace it by what's known as
-the perceptron's <em>bias</em>, $b \equiv
--\mbox{threshold}$.  Using the bias instead of the threshold, the
-perceptron rule can be
-rewritten:
-<a class="displaced_anchor" name="eqtn2"></a>\begin{eqnarray}
+Nessa rede, a primeira coluna de perceptrons - o que chamamos de a primeira <em>camada</em> de perceptrons -
+está fazendo três decisões bem simples, ao multiplicar pesos aos valores de entrada. E quanto ao a segunda 
+camada de perceptrons? Cada um desses perceptrons da segunda camada está multiplicando pesos aos valores dos
+neurônios das camadas anteriores e tomando decisões a partir das decisões dos neurônios da camada anterior.
+Dessa maneira cada camada pode um perceptron na segunda camada pode tomar uma decisão mais complexa e mais
+abstrata do que o neurônio da camada anterior. E decisões ainda mais complexas podem ser feitas por um perceptron
+da terceira camada. Assim, uma rede de perceptrons de várias camadas pode realizar tomadas de decisões complexas
+</p>
+<p>
+  A propósito, quando se define perceptrons, cada perceptron tem apenas um único valor de saída. Na rede 
+  acima os perceptrons parecem ter multiplos valores de saida. Na verdade eles tem apenas uma única saída.
+  As várias setas saindo dos perceptrons são apenas para indicar que essa saída do perceptron é usada como 
+  entrada para vários outros perceptrons da camada seguinte. E menos desajeitado do que desenhar uma única
+  linha que posteriormente se divide em várias setas não é mesmo?
+</p>
+<p>
+  Vamos simplificar o modo como descrevemos perceptrons. A condição $\sum_j w_j x_j > \mbox{threshold}$
+  é complicacada, é nós podemos fazer duas mudanças na notação para simplifica-la. A primeira mudança seria
+  escrever $\sum_j w_j x_j$ como um produto escalar, $w \cdot x \equiv \sum_j w_j x_j$, onde $w$ e $x$ são 
+  vetores que tem como componentes os pesos e valores de entrada respectivamente. A segunda mudança é mover 
+  o valor limite - em inglês <em>threshold</em> - para o outro lado da desigualdade, e substituir ele por 
+  um valor que é chamado o <em>bias</em> -  tendência - de um perceptron $b \equiv-\mbox{threshold}$. 
+  usando o bias envés do valor limite, a regra do perceptron pode se reescrita: 
+<a class="displaced_anchor" name="eqtn2"></a>
+\begin{eqnarray}
   \mbox{output} = \left\{ 
     \begin{array}{ll} 
       0 & \mbox{if } w\cdot x + b \leq 0 \\
       1 & \mbox{if } w\cdot x + b > 0
     \end{array}
   \right.
-\tag{2}\end{eqnarray}
-You can think of the bias as a measure of how easy it is to get the
-perceptron to output a $1$.  Or to put it in more biological terms,
-the bias is a measure of how easy it is to get the perceptron to
-<em>fire</em>.  For a perceptron with a really big bias, it's extremely
-easy for the perceptron to output a $1$.  But if the bias is very
-negative, then it's difficult for the perceptron to output a $1$.
-Obviously, introducing the bias is only a small change in how we
-describe perceptrons, but we'll see later that it leads to further
-notational simplifications.  Because of this, in the remainder of the
-book we won't use the threshold, we'll always use the bias.</p><p>I've described perceptrons as a method for weighing evidence to make
-decisions.  Another way perceptrons can be used is to compute the
-elementary logical functions we usually think of as underlying
-computation, functions such as <CODE>AND</CODE>, <CODE>OR</CODE>, and
-<CODE>NAND</CODE>.  For example, suppose we have a perceptron with two
-inputs, each with weight $-2$, and an overall bias of $3$.  Here's our
-perceptron:
+\tag{2}\end{eqnarray} Você pode interpretar o bias como sendo uma medida de o quão fácil é para que o valor de sáida de um determinado
+perceptron seja $1$. Ou para colocar em termos mais biológicos, o bias é a medida de o quão fácil é para um 
+perceptron <em>disparar</em>. Para um perceptron com um bias muito grande, é extremamente para que a saída desse
+perceptron seja $1$. Mas para um perceptron com um bias muito negativo, é mais difícil para o perceptron ter
+$1$ como seu valor de saída. Obviamente, a introdução do bias é apenas uma pequena mudança na forma como 
+descrevemos perceptrons, mas nós veremos mais tarde que essa pequena mudança leva para várias simplificações 
+de notação. Por causa disso, no resto do livro não usaremos o valor limite, sempre usaremos o bias.
+</p>
+<p>
+  Eu descrevi perceptrons como um metodo de ponderar evidencias para tomar decisões. Outra maneira de de utilizar
+  perceptrons é para computar funções lógicas fundamentais para a computação, funções como <CODE>AND</CODE>,
+  <CODE>OR</CODE>, e <CODE>NAND</CODE>. Por exemplo, suponha que temos um perceptrons com dois valores de entrada, cada um com peso $-2$, e um bias global de $3$. Esse é o nosso percepton: 
 <center>
 <img src="images/tikz2.png"/>
 </center>
-Then we see that input $00$ produces output $1$, since
-$(-2)*0+(-2)*0+3 = 3$ is positive.  Here, I've introduced the $*$
-symbol to make the multiplications explicit.  Similar calculations
-show that the inputs $01$ and $10$ produce output $1$.  But the input
-$11$ produces output $0$, since $(-2)*1+(-2)*1+3 = -1$ is negative.
-And so our perceptron implements a <CODE>NAND</CODE>
-gate!</p><p><a name="universality"></a></p><p>The <CODE>NAND</CODE> example shows that we can use perceptrons to compute
-simple logical functions.
- In fact, we can use
-networks of perceptrons to compute <em>any</em> logical function at all.
-The reason is that the <CODE>NAND</CODE> gate is universal for
-computation, that is, we can build any computation up out of
-<CODE>NAND</CODE> gates.  For example, we can use <CODE>NAND</CODE> gates to
-build a circuit which adds two bits, $x_1$ and $x_2$.  This requires
-computing the bitwise sum, $x_1 \oplus x_2$, as well as a carry bit
-which is set to $1$ when both $x_1$ and $x_2$ are $1$, i.e., the carry
-bit is just the bitwise product $x_1 x_2$:
+  É possivel ver que o valor de entrada $00$ produz uma saída $1$, desde que $(-2)*0+(-2)*0+3 = 3$ é positivo.
+  Aqui eu introduzi o símbolo $*$ para tornar a multiplicação explicita. Calculos similares mostram que o para 
+  valores de entrada $01$ e $10$ produzem a saída $1$. Mas a entrada $11$ produz a saída $0$, desde que $(-2)
+  *1 +(-2)*1+3 = -1$ seja negativo. E assim nosso percetron implementa um porta lógica <CODE>NAND</CODE>!!
+</p>
+
+<p>
+  <a name="universality"></a>
+</p>
+<p>
+  O exemplo <CODE>NAND</CODE> nos mostra que podemos usar percetrons para calcular funções lógicas simples. 
+  Na verdade, nós podemos usar redes de perceptrons para calcular <em>qualquer</em> função lógica.
+  O porque disso é que a porta lógica <CODE>NAND</CODE> é universal para a computação, isso siginifica que,
+  nós podemos construir qualquer computação apenas com portas lógicas<CODE>NAND</CODE>. Por exemplo, nós 
+  podemos usar portas lógicas <CODE>NAND</CODE> para construir um circuito que adiciona dois bits, $x_1$ e
+  $x_2$. Isso requer calcular uma soma <em>bitwise</em>, $x_1 \oplus x_2$, e também carregar o bit de valor
+  $1$ quando ambos $x_1$ e $x_2$ são $1$, i.e., o bit carregado é apenas o produto de $x_1 x_2$: 
 <center>
  <img src="images/tikz3.png"/>
-</center>
-To get an equivalent network of perceptrons we replace all the
-<CODE>NAND</CODE> gates by perceptrons with two inputs, each with weight
-$-2$, and an overall bias of $3$.  Here's the resulting network.  Note
-that I've moved the perceptron corresponding to the bottom right
-<CODE>NAND</CODE> gate a little, just to make it easier to draw the arrows
-on the diagram:
+</center> 
+  Para conseguir a rede de perceptrons equivalente a esse circuito nós substituimos todos as portas <CODE>NAND</CODE>
+  por perceptrons com duas entradas, cada uma com um peso $-2#, e um bias global $3$. Essa é a rede resultante.
+  Note que eu movi um pouco o perceptron correspondente a porta <CODE>NAND</CODE> no canto inferior direito 
+  apenas para tornar mais fácil desenhar as setas no diagrama:
 <center>
  <img src="images/tikz4.png"/>
 </center>
+  Um aspecto notável dessa rede de perceptron é que a saída do perceptron mais a esquerda é usada duas vezes
+  como entrada do último perceptron de baixo. Quando eu defini o modelo de perceptron eu não disse se esse tipo 
+  de dupla entrada era permitida. Na verdade, isso não importa tanto. Se nós não queremos permitir esse tipo de
+  coisa, é possível unir as duas linhas, em uma única conexão com um peso -4 envés de ter duas conexões com peso
+  -2. 
 One notable aspect of this network of perceptrons is that the output
 from the leftmost perceptron is used twice as input to the bottommost
 perceptron.  When I defined the perceptron model I didn't say whether
