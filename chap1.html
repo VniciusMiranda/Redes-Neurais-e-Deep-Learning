@@ -21,7 +21,8 @@
           {scale: 92},
         TeX: { equationNumbers: { autoNumber: "AMS" }}});
     </script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
 
 
     <link href="assets/style.css" rel="stylesheet">
@@ -53,9 +54,13 @@
 </style>
 
   </head>
-  <body><div class="header"><h1 class="chapter_number">
-  <a href="">Capítulo 1</a></h1>
-  <h1 class="chapter_title"><a href="">Usando redes neurais para reconhecer digitos manuscritos</a></h1></div><div class="section"><div id="toc"> 
+  <body>
+    <div class="header">
+      <h1 class="chapter_number">
+        <a href="">Capítulo 1</a>
+      </h1>
+  <h1 class="chapter_title">
+    <a href="">Usando redes neurais para reconhecer digitos manuscritos</a></h1></div><div class="section"><div id="toc"> 
 <p class="toc_title"><a href="index.html">Neural Networks and Deep Learning</a></p><p class="toc_not_mainchapter"><a href="about.html">What this book is about</a></p><p class="toc_not_mainchapter"><a href="exercises_and_problems.html">On the exercises and problems</a></p><p class='toc_mainchapter'><a id="toc_using_neural_nets_to_recognize_handwritten_digits_reveal" class="toc_reveal" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';"><img id="toc_img_using_neural_nets_to_recognize_handwritten_digits" src="images/arrow.png" width="15px"></a><a href="chap1.html">Using neural nets to recognize handwritten digits</a><div id="toc_using_neural_nets_to_recognize_handwritten_digits" style="display: none;"><p class="toc_section"><ul><a href="chap1.html#perceptrons"><li>Perceptrons</li></a><a href="chap1.html#sigmoid_neurons"><li>Sigmoid neurons</li></a><a href="chap1.html#the_architecture_of_neural_networks"><li>The architecture of neural networks</li></a><a href="chap1.html#a_simple_network_to_classify_handwritten_digits"><li>A simple network to classify handwritten digits</li></a><a href="chap1.html#learning_with_gradient_descent"><li>Learning with gradient descent</li></a><a href="chap1.html#implementing_our_network_to_classify_digits"><li>Implementing our network to classify digits</li></a><a href="chap1.html#toward_deep_learning"><li>Toward deep learning</li></a></ul></p></div>
 <script>
 $('#toc_using_neural_nets_to_recognize_handwritten_digits_reveal').click(function() { 
@@ -204,7 +209,7 @@ By <a href="http://michaelnielsen.org">Michael Nielsen</a> / Dec 2019
 </div>
 </p>
 <p>
-  O sitema visual humano é uma das maravilhas do mundo. 
+  O sistema visual humano é uma das maravilhas do mundo. 
   Considere a seguinte sequência de digitos manuscritos:
 <a name="complete_zero"></a>
 </p>
@@ -445,43 +450,32 @@ de notação. Por causa disso, no resto do livro não usaremos o valor limite, s
   Um aspecto notável dessa rede de perceptron é que a saída do perceptron mais a esquerda é usada duas vezes
   como entrada do último perceptron de baixo. Quando eu defini o modelo de perceptron eu não disse se esse tipo 
   de dupla entrada era permitida. Na verdade, isso não importa tanto. Se nós não queremos permitir esse tipo de
-  coisa, é possível unir as duas linhas, em uma única conexão com um peso -4 envés de ter duas conexões com peso
-  -2. 
-One notable aspect of this network of perceptrons is that the output
-from the leftmost perceptron is used twice as input to the bottommost
-perceptron.  When I defined the perceptron model I didn't say whether
-this kind of double-output-to-the-same-place was allowed.  Actually,
-it doesn't much matter.  If we don't want to allow this kind of thing,
-then it's possible to simply merge the two lines, into a single
-connection with a weight of -4 instead of two connections with -2
-weights.  (If you don't find this obvious, you should stop and prove
-to yourself that this is equivalent.)  With that change, the network
-looks as follows, with all unmarked weights equal to -2, all biases
-equal to 3, and a single weight of -4, as marked:
+  coisa, é possível unir as duas linhas em uma única conexão com um peso -4 envés de ter duas conexões com peso
+  -2 (Se você não acha isso óbvio, sugiro que você pare e prove para si mesmo que esses dois casos são equivalentes).
+  Com essa mudança, a rede fica como na imagem abaixo, com todos os pesos não marcados iguais a -2, e todos 
+  os biases iguais 3, e apenas um peso como -4:
 <center>
  <img src="images/tikz5.png"/>
 </center>
-Up to now I've been drawing inputs like $x_1$ and $x_2$ as variables
-floating to the left of the network of perceptrons.  In fact, it's
-conventional to draw an extra layer of perceptrons - the <em>input
-  layer</em> - to encode the inputs:
+  Até agora eu tenho desenhado as entradas $x_1$ e $x_2$ como variáveis flutuando a esquerda da rede de 
+  perceptrons. Na verdade, é convencional desenhar uma camada extra de perceptrons <em>- a camada de entrada </em>
+  - para codificar as entradas: 
 <center>
  <img src="images/tikz6.png"/>
 </center>
-This notation for input perceptrons, in which we have an output, but
-no inputs,
+  Essa notação para perceptrons de entrada, que tem uma saída, mas não tem uma entrada,
 <center>
 <img src="images/tikz7.png"/>
 </center>
-is a shorthand.  It doesn't actually mean a perceptron with no inputs.
-To see this, suppose we did have a perceptron with no inputs.  Then
-the weighted sum $\sum_j w_j x_j$ would always be zero, and so the
-perceptron would output $1$ if $b > 0$, and $0$ if $b \leq 0$.  That
-is, the perceptron would simply output a fixed value, not the desired
-value ($x_1$, in the example above). It's better to think of the
-input perceptrons as not really being perceptrons at all, but rather
-special units which are simply defined to output the desired values,
-$x_1, x_2,\ldots$.</p><p>The adder example demonstrates how a network of perceptrons can be
+  é uma abreviação. Não significa exatamente que o perceptron não tem entradas. Para enxergar isso, suponha que
+  tivéssemos um perceptron sem entradas. Nesse caso a media ponderada $\sum_j w_j x_j$ seria sempre zero, e portanto 
+  a saida do perceptron seria $1$ se $b > 0$ e seria $0$ se $b \leq 0$. Isso significa que, o perceptron iria 
+  simplesmente exibir como saida um valor fixo e não o valor desejado(que seria $x_1$ no exemplo acima). É melhor
+  pensar nas entradas dos perceptrons como não sendo perceptrons, mas sim como sendo unidades especiais que são
+  definidas pela saida dos valores desejados,x_1, x_2,\ldots$.
+</p>
+<p>
+  The adder example demonstrates how a network of perceptrons can be
 used to simulate a circuit containing many <CODE>NAND</CODE> gates.  And
 because <CODE>NAND</CODE> gates are universal for computation, it follows
 that perceptrons are also universal for computation.</p><p>The computational universality of perceptrons is simultaneously
