@@ -220,23 +220,23 @@ By <a href="http://michaelnielsen.org">Michael Nielsen</a> / Dec 2019
  </p>
 <p>
   A maioria das pessoas reconhece sem esforço esses digitos como sendo 504192.
-  Mas se observarmos bem, é possível perceber que esse processo de reconhecimento 
-  de digitos não é tão simples assim. Em cada hemisferio do seu cérebro, humanos tem
+  Mas talvez "sem esforço" não seja a melhor maneira de descrever esse processo.
+   Em cada hemisfério do seu cérebro, humanos tem 
   um cortex primário visual, também conhecido como V1, contendo 140 milhões de neurônios,
   com dezenas de bilhões de conexões entre eles. E a visão humana não envolve apenas V1,
   mas uma série de cortex visuais - V2, V3, V4 e V5 - que fazem um processamento de imagem
   progressivamente mais complexo. Nós carregamos em nossas cabeças um supercomputador, 
   que foi condicionado pela evolução ao longo de milhões de anos, e se tornou absurdamente
   adaptado em entender o mundo visual. Reconhecer digitos manuscritos não é fácil. A questão 
-  é que nós humanos somos incrívelmente bons em fazer isso que boa parte desse trabalho é feito
-  inconcientemente. E por conta disso nós não apreciamos o quão difícil é o problema que nosso
+  é que nós humanos somos tão incrívelmente bons em fazer isso que boa parte desse trabalho é feito
+  inconscientemente. E por conta disso nós não apreciamos o quão difícil é o problema que nosso
   sistema visual tem que resolver. 
 </p>
 <p>
   A dificuldade de reconhecimento de padrões visuais se torna aparente quando você tenta escrever
-  um programa de computador que reconheça digitos como esses acima. Algo que parece fácil quando 
-  nós mesmos fazemos derepente se torna extremamente difícil. Intuições simples sobre como nós 
-  reconhecemosformas - "um 9 tem uma volta no topo, e uma linha vertical em baixo a direita" - 
+  um programa de computador que seja capaz de reconhecer digitos como esses acima. Algo que parece 
+  fácil quando nós mesmos fazemos de repente se torna extremamente difícil. Intuições simples sobre 
+  como nós reconhecemos formas - "um 9 tem uma volta no topo, e uma linha vertical em baixo a direita" - 
   se mostram não tão simples de serem expressas em um algoritmo. Quando se tenta fazer essas 
   regras de forma precisa, você rapidamente se perde em um mar de exceções e casos especiais.
 </p>
@@ -250,40 +250,41 @@ By <a href="http://michaelnielsen.org">Michael Nielsen</a> / Dec 2019
 <p>
   e então desenvolver um sistema que consiga aprender a partir desses exemplos de treino. Em outras
   palavras, a rede neural usa os exemplos para automaticamente definir regras para o reconhecimento
-  de dígitos manuscritos. Além disso, se aumentaros o número de exemplos de treino, a rede neural
+  de dígitos manuscritos. Além disso, se aumentarmos o número de exemplos de treino, a rede neural
   consegue aprender mais sobre dígitos manuscritos, e então melhoras sua precisão. Foram mostrados 
   100 dígitos de treino acima, talvez nós poderiamos construir um reconhecedor de dígitos manuscritos
-  ainda melhor se estivessimos usando milhares o até mesmo milhões ou bilhões de exemplos de treino.
+  ainda melhor se estivessemos usando milhares o até mesmo milhões ou bilhões de exemplos de treino.
 </p>
 <p>
   Nesse capítulo nós iremos escrever um programa de computador implementando uma rede neural que 
   reconhece dígitos manuscritos. O programa tem apenas 74 linhas, e não usa nenhuma biblioteca
   especial para redes neurais. Mas esse pequeno programa pode reconhecer dígitos manuscritos com 
   uma precisão de 96%, sem intervenção humana. Além disso, em capítulos posteriores nós iremos
-  desenvolver ideias que podem melhorar a precisão desse programa para níveis acimp de 99%. Na verdade, 
+  desenvolver ideias que podem melhorar a precisão desse programa para níveis acima de 99%. Na verdade, 
   as melhores redes neurais comerciais são agora tão boas que elas são usadas em bancos para processar
   cheques, e serviços postais para reconhecer endereços.
 </p>
 <p>
-  Nós iremos focar em reconhecimento de manuscritos porque é um problema prototipo excelente para aprender
-  redes neurais no geral. Como prototipo ele é perfeito: é desafiador - como já vimos não é algo simples
+  Nós iremos focar em reconhecimento de manuscritos porque é um problema protótipo excelente para aprender
+  redes neurais no geral. Como protótipo ele é perfeito: é desafiador - como já vimos não é algo simples
   reconhecer digitos manuscritos - mas também não é difícil ao ponto de demandar uma solução extremamente
   complicada, ou um poder computacional gigantesco. Além disso, é uma ótima forma de desenvolver técnicas
-  mais avançadas como deep learning. Portanto, ao longo desse livro nós iremos retornar repetidamente para 
+  mais avançadas como deep learning. Portanto, ao longo desse livro nós iremos retornar várias vezes para 
   o problema de reconhecimento de dígitos manuscritos. Em capítulos mais avançados iremos discutir como esssas
-  ideias podem ser aplicadas em outros problemas como visão conputacional, e também processamento de fala,
-  e texto, e outros dominios.
+  ideias podem ser aplicadas em outros problemas como visão computacional, processamento de fala
+  e texto, entre outros domínios.
 </p>
 <p>
   Se o ponto desse capítulo fosse apenas escrever um programa de computador para reconhecer digitos manuscritos
   esse capitulo seria muito menor, não é mesmo? Mas ao longo do caminho nós iremos desenvolver várias ideias 
-  chave sobre redes neurais, inclusive dois  tipos importantes de neurônios artificiais (o perceptron e o 
-  neurônio sigmoid), e o também o algoritmo de aprendizado padrão para redes neurais, conhecido como 
-  gradiente stocástico descedente. Ao longo do livro, eu irei focar em explicar o <em>porquê</em> as coisas 
-  são feitas do jeito que são, e em construir sua intuição em redes neurais. Para abordar tudo isso dessa forma
-  é necessária uma discusslão mais longa do que se fosse apresentado apenas as mecanicas básicas de como tudo 
-  está acontecendo, mas vale a pena se levarmos em conta o entendimento profundo que irá trazer para você.
-  Até o final desse capítulo você estará na posição de entender o que deep learning é.
+  chave sobre redes neurais, inclusive dois tipos importantes de neurônios artificiais (o perceptron e o 
+  neurônio sigmoid), e também o algoritmo de aprendizado padrão para redes neurais, conhecido como 
+  gradiente stocástico descedente (soa complicado mas não é, confia no pai). Ao longo do livro, eu irei focar em explicar o 
+  <em>porquê</em>  das coisas serem feitas do jeito que são, e em construir sua intuição em redes neurais. 
+  Para abordar tudo isso dessa forma mais didática e profunda é necessário uma discussão mais longa do que se 
+  fosse apresentado apenas as mecânicas básicas de como tudo acontece, mas vale a pena se levarmos em conta o 
+  entendimento profundo que esse tipo de abordagem irá trazer para você. Até o final desse capítulo você estará na posição 
+  de entender o que deep learning é, e porque isso é tão importante.
 </p>
 <p>
   <h3>
@@ -292,39 +293,38 @@ By <a href="http://michaelnielsen.org">Michael Nielsen</a> / Dec 2019
   </h3>
 </p>
 <p>
-  O que é uma rede neural? Para começar, eu irei explicaar um tipo de neurônio artificial chamado 
+  O que é uma rede neural? Para começar, eu irei explicar um tipo de neurônio artificial chamado 
   <em>perceptron</em>. Perceptrons foram 
   <a href="http://books.google.ca/books/about/Principles_of_neurodynamics.html?id=7FhRAAAAMAAJ">
     desenvolvidos</a>
   nos anos 50 e 60 pelo cientista 
-  <a href="http://en.wikipedia.org/wiki/Frank_Rosenblatt">Frank Rosenblatt</a>
-  , inspirado por 
-  <a href="http://scholar.google.ca/scholar?cluster=4035975255085082870">trabalhos anteriores </a> 
+  <a href="http://en.wikipedia.org/wiki/Frank_Rosenblatt">Frank Rosenblatt</a>, inspirado por 
+  <a href="http://scholar.google.ca/scholar?cluster=4035975255085082870">trabalhos anteriores</a> 
   de  
   <a href="http://en.wikipedia.org/wiki/Warren_McCulloch">Warren McCulloch</a> 
   e  
   <a href="http://en.wikipedia.org/wiki/Walter_Pitts"> WalterPitts</a>. 
   Hoje em dia é mais comum usar um outro modelo de neurônio artificial - neste livro, e em muitos livros
-  modernos sobre redes neurais, o modelo principal usado é um chamado <em>neurônio sigmoid</em> Nós iremos 
-  abordar os neurônios sigmoids em breve. Mas para entender o por quê dos neurônios sigmoids serem definidos
+  modernos sobre redes neurais, o modelo principal usado é um chamado <em>neurônio sigmoid</em>. Nós iremos 
+  abordar os neurônios sigmoids em breve. Mas para entender o porquê dos neurônios sigmoids serem definidos
   do jeito que são, vale a pena entender perceptrons antes.
 </p>
 <p>
-  Então como perceprons funcionam? Um perceptron recebe várias entradas binárias, $x_1, x_2, \ldots$, e 
+  Então como perceptrons funcionam? Um perceptron recebe várias entradas binárias, $x_1, x_2, \ldots$, e 
   produz uma saída binária: 
 <center>
 <img src="images/tikz0.png"/>
 </center>
 Esse exemplo mostra um perceptron que recebe três entradas, $x_1, x_2, x_3$. Em geral ele poderia ter mais 
-ou menos entradas. Rsenblatt propós uma regra simples para calcular a saída. Ele introduziu <em>pesos</em>
+ou menos entradas. Rosenblatt propós uma regra simples para calcular a saída. Ele introduziu <em>pesos</em>
 , $w_1,w_2,\ldots$, números reais que expressam a importância dos respectivos valores de entrada para o 
 valor de saída. A saída do neurônio, $0$ or $1$, é determindada se a soma ponderada $\sum_j w_j x_j$ é menor
-ou mair do que um certo <em>valor limite </em>. Assim como os pesos, o limite é um número real que é 
-um parametro do neuônio. Colocando isso em termos mais algébricos:
+ou maior do que um certo <em>valor limite</em>. Assim como os pesos, o limite é um número real que é 
+um parametro do neurônio. Colocando isso em termos mais algébricos:
   <a class="displaced_anchor" name="eqtn1"></a>\begin{eqnarray}
-  \mbox{output} & = & \left\{ \begin{array}{ll}
-      0 & \mbox{if } \sum_j w_j x_j \leq \mbox{ threshold} \\
-      1 & \mbox{if } \sum_j w_j x_j > \mbox{ threshold}
+  \mbox{saída} & = & \left\{ \begin{array}{ll}
+      0 & \mbox{if } \sum_j w_j x_j \leq \mbox{valor limite} \\
+      1 & \mbox{if } \sum_j w_j x_j > \mbox{ valor limite}
       \end{array} \right.
 \tag{1}\end{eqnarray}
 
@@ -333,38 +333,38 @@ um parametro do neuônio. Colocando isso em termos mais algébricos:
 <p>
   Esse é o modelo matemático básico. Uma maneira de interpretar o perceptron é pensar nele como se fosse um
   dispositivo que toma decisões através da adição de pesos as evidências que estão sendo usadas para realizar
-  essa tomada de decisão. Deixe-me exemplicar essa idea. Não é um exemplo muito realístico, mas é fácil de 
+  essa tomada de decisão. Deixe-me exemplificar essa ideia. Não é um exemplo muito realístico, mas é fácil de 
   entender, e em breve iremos abordar exemplos mais realistas. Suponha que o fim de semana está chegando
-  e você ouviu que vai acontecer um festival de queijo na sua cidade(não sei o que o autor tava pensando com 
-  um exemplo desses mas ok). Você gosta de queijo, e está tentando decidir entre ir ou não no festival. Estando
+  e você ouviu que vai rolar uma chopada. 
+  Você gosta de chopadas, e está tentando decidir entre ir ou não. Estando
   nessa situação talvez você tenha que tomar essa decisão <em>pesando</em> três fatores:
 <ol>
   <li> O clima no dia é propicio?
   <li> Sua namorada ou namorado vai querer ir com você?
-  <li> O festival é próximo de algum transporte público?(você não tem um carro :/)
+  <li> A chopada é próxima de algum transporte público?(você não tem um carro :/)
 </ol>
-  Nós podemos representar esses três fatores como valores binários correspondentes $x_1, x_2$, and $x_3$.
-  Por exemplo, nós teriamos $x_1 = 1$ se o clima no dia for propicio, e $x_1 = 0$ se seu namorado ou namorada
+  Nós podemos representar esses três fatores como valores binários correspondentes $x_1, x_2$, e $x_3$.
+  Por exemplo, nós teriamos $x_1 = 1$ se o clima no dia for propicio, e $x_2 = 1$ se seu namorado ou namorada
   quiser ir contigo, e  $x_2 = 0$ se ele ou ela não quiser. E o mesmo acontece com $x_3$ e o transporte público.
 </p>
 <p>
-  Agora, suponha que você goste muito de queijo, tanto que você estaria feliz em ir para o festival mesmo se 
-  sua namorada ou namorado não esteja interessado(a) em ir ou se seja díficil de chegar no local do festival.
-  Mas talvez você realmente odeie tempo ruim, e você não iria ao festival se o clima do dia fossse chuvoso por
+  Agora, suponha que você goste muito de dançar funk nas chopadas, tanto que você estaria feliz em ir mesmo se 
+  sua namorada(o) não esteja interessada(o) ou se chegar no local seja difícil.
+  Mas talvez você realmente odeie tempo ruim, e você não iria na chopada se o clima do dia fossse chuvoso por
   exemplo. Você pode usar perceptrons para modelar esse tipo de tomada de decisão. Uma maneira de fazer isso 
   é escolhendo um peso $w_1 = 6$ para o clima, e $w_2 = 2$ e $w_3 = 2$ para as outras condições. Quanto maior
   o valor de $w_1$ mais importante para você é a questão do clima, bem mais importante do que se o seu namorado(a)
-  te acompanhará, ou se o festival é próximo de tranporte público. Agora suponha que o valor limite é $5$ para o 
+  te acompanhará, ou se a chopada é próxima do tranporte público. Agora suponha que o valor limite é $5$ para o 
   perceptron. Com essas escolhas, o perceptron  implementa o modelo de decisão desejado, apresentando como saída
   $1$ sempre que o clima é bom, e $0$ sempre que o clima é ruim. Não faz diferença para a saída do perceptron
-  se o se namorado(a) quer ir, se o transporte público é perto.
+  se o se namorado(a) quer ir, ou se o transporte público é perto.
 </p>
 <p>
   Variando os pesos e o valor limite nós podemos gerar diferentes modelos de tomada de decisão. Por exemplo,
-  suponha que nós escolhamos um valor limite de $3$. Então o percepron iria decidir que você deveria ir ao 
-  festival sempre que o tempo estivesse bom <em>ou</em> quando ambos o festival estivesse perto do transporte
-  público <em>e</em> seu namorado(a) estejam dispostos a ir com você. Em outras palavras, ele seria um modelo
-  de tomada de decisão diferente. Abaixar o valor limite significa que você está mais disposto a ir ao festival
+  suponha que nós escolhamos um valor limite de $3$. Então o percepron iria decidir que você deveria ir a 
+  chopada sempre que o tempo estivesse bom <em>ou</em> quando ambos a chopada estivesse perto do transporte
+  público <em>e</em> sua namorada(o) esteja disposta(o) a ir com você. Em outras palavras, ele seria um modelo
+  de tomada de decisão diferente. Abaixar o valor limite significa que você está mais disposto a ir a chopada 
 </p>
 <p>
   Obviamente, o perceptron não é um modelo humano completo de tomada de decisão! Mas o que o exemplo illustra
@@ -441,8 +441,8 @@ de notação. Por causa disso, no resto do livro não usaremos o valor limite, s
  <img src="images/tikz3.png"/>
 </center> 
   Para conseguir a rede de perceptrons equivalente a esse circuito nós substituimos todos as portas <CODE>NAND</CODE>
-  por perceptrons com duas entradas, cada uma com um peso $-2#, e um bias global $3$. Essa é a rede resultante.
-  Note que eu movi um pouco o perceptron correspondente a porta <CODE>NAND</CODE> no canto inferior direito 
+  por perceptrons com duas entradas, cada uma com um peso $-2$, e um bias global $3$. Essa é a rede resultante.
+  Note que eu movi um pouco o perceptron correspondente a porta <CODE>NAND</CODE> do canto inferior direito 
   apenas para tornar mais fácil desenhar as setas no diagrama:
 <center>
  <img src="images/tikz4.png"/>
@@ -470,73 +470,91 @@ de notação. Por causa disso, no resto do livro não usaremos o valor limite, s
   é uma abreviação. Não significa exatamente que o perceptron não tem entradas. Para enxergar isso, suponha que
   tivéssemos um perceptron sem entradas. Nesse caso a media ponderada $\sum_j w_j x_j$ seria sempre zero, e portanto 
   a saida do perceptron seria $1$ se $b > 0$ e seria $0$ se $b \leq 0$. Isso significa que, o perceptron iria 
-  simplesmente exibir como saida um valor fixo e não o valor desejado(que seria $x_1$ no exemplo acima). É melhor
-  pensar nas entradas dos perceptrons como não sendo perceptrons, mas sim como sendo unidades especiais que são
+  simplesmente exibir como saida um valor fixo e não o valor desejado(que seria $x_1$ no exemplo acima). É melhor pensar nas entradas dos perceptrons como não sendo perceptrons, mas sim como sendo unidades especiais que são
   definidas pela saida dos valores desejados,x_1, x_2,\ldots$.
 </p>
 <p>
-  The adder example demonstrates how a network of perceptrons can be
-used to simulate a circuit containing many <CODE>NAND</CODE> gates.  And
-because <CODE>NAND</CODE> gates are universal for computation, it follows
-that perceptrons are also universal for computation.</p><p>The computational universality of perceptrons is simultaneously
-reassuring and disappointing.  It's reassuring because it tells us
-that networks of perceptrons can be as powerful as any other computing
-device.  But it's also disappointing, because it makes it seem as
-though perceptrons are merely a new type of <CODE>NAND</CODE> gate.
-That's hardly big news!</p><p>However, the situation is better than this view suggests.  It turns
-out that we can devise <em>learning
-  algorithms</em> which can
-automatically tune the weights and biases of a network of artificial
-neurons.  This tuning happens in response to external stimuli, without
-direct intervention by a programmer.  These learning algorithms enable
-us to use artificial neurons in a way which is radically different to
-conventional logic gates.  Instead of explicitly laying out a circuit
-of <CODE>NAND</CODE> and other gates, our neural networks can simply learn
-to solve problems, sometimes problems where it would be extremely
-difficult to directly design a conventional circuit.</p><p><h3><a name="sigmoid_neurons"></a><a href="#sigmoid_neurons">Sigmoid neurons</a></h3></p><p>Learning algorithms sound terrific.  But how can we devise such
-algorithms for a neural network?  Suppose we have a network of
-perceptrons that we'd like to use to learn to solve some problem.  For
-example, the inputs to the network might be the raw pixel data from a
-scanned, handwritten image of a digit.  And we'd like the network to
-learn weights and biases so that the output from the network correctly
-classifies the digit.  To see how learning might work, suppose we make
-a small change in some weight (or bias) in the network.  What we'd
-like is for this small change in weight to cause only a small
-corresponding change in the output from the network.  As we'll see in
-a moment, this property will make learning possible.  Schematically,
-here's what we want (obviously this network is too simple to do
-handwriting recognition!):</p><p><center>
-<img src="images/tikz8.png"/>
-</center></p><p>If it were true that a small change in a weight (or bias) causes only
-a small change in output, then we could use this fact to modify the
-weights and biases to get our network to behave more in the manner we
-want.  For example, suppose the network was mistakenly classifying an
-image as an "8" when it should be a "9".  We could figure out how
-to make a small change in the weights and biases so the network gets a
-little closer to classifying the image as a "9".  And then we'd
-repeat this, changing the weights and biases over and over to produce
-better and better output.  The network would be learning.</p><p>The problem is that this isn't what happens when our network contains
-perceptrons.  In fact, a small change in the weights or bias of any
-single perceptron in the network can sometimes cause the output of
-that perceptron to completely flip, say from $0$ to $1$.  That flip
-may then cause the behaviour of the rest of the network to completely
-change in some very complicated way.  So while your "9" might now be
-classified correctly, the behaviour of the network on all the other
-images is likely to have completely changed in some hard-to-control
-way.  That makes it difficult to see how to gradually modify the
-weights and biases so that the network gets closer to the desired
-behaviour.  Perhaps there's some clever way of getting around this
-problem.  But it's not immediately obvious how we can get a network of
-perceptrons to learn.</p><p>We can overcome this problem by introducing a new type of artificial
-neuron called a <em>sigmoid</em> neuron.
-Sigmoid neurons are similar to perceptrons, but modified so that small
-changes in their weights and bias cause only a small change in their
-output.  That's the crucial fact which will allow a network of sigmoid
-neurons to learn.</p><p>Okay, let me describe the sigmoid neuron.  We'll depict sigmoid
-neurons in the same way we depicted perceptrons:
+  O exemplo da adição demonstra como uma rede de perceptrons pode simular um circuito contendo várias portas
+  <CODE>NAND</CODE>. E como portas <CODE>NAND</CODE> são universais na computação, portanto perceptrons também
+  são universais para computação.
+</p>
+<p>
+  A universalidade computacional dos perceptrons, ao mesmo tempo, empolga e desaponta. É empolgante pois 
+  mostra que perceptrons são tão poderosos quanto qualquer dispositivo computacional. Mas desaponta no sentido
+  de parecer que perceptrons são apenas um novo tipo de porta <CODE>NAND</CODE>.
+</p>
+<p>
+  No entanto, a situação é melhor do que parece. Acontece que nós podemos inventar <em>algoritimos de aprendizado</em>
+  que podem automaticamente mudar os pesos e biases da rede artificial de neurônios. Essa mudança dos pesos e biases
+  acontede em resposta a estimulos externos, sem a intervenção direta de um programador. Esses algoritimos de aprendizado
+  nos permitem usar neurônios artificiais de um jeito que é radicalmente diferente do uso convencional de portas lógicas.
+  Envés de explicitamente montar um circuito de portas <CODE>NAND</CODE> e outras portas lógicas, nossa rede neural
+  pode simplesmente aprender a resolver problemas, em alguns casos problemas que seriam extremamente difícil de diretamente
+  desenvolver um circuito convencional para resolver.
+</p>
+<p>
+  <h3>
+    <a name="sigmoid_neurons"></a>
+    <a href="#sigmoid_neurons">Sigmoid neurons</a>
+  </h3>
+</p>
+<p>
+  Aprender algoritimos soa aterorizante. Mas nós podemos inventar tais algoritmos para uma rede neural?
+  Suponha que nós temos uma rede de perceptrons que gostariamos de usar para resolver um problema. Por
+  exemplo, as entradas da rede poderiam ser dados de pixels de um digito manuscrito scanneado. E nós 
+  queremos que essa rede aprenda os pesos e biases de forma que a saída da rede classifique corretamente
+  o digito. Para vermos como esse aprendizado funcionaria, suponha que fizessemos uma pequena alteração
+  em algum peso (ou bias) da rede. O que nós gostariamos é que essa pequena mudança no peso cause apenas 
+  uma pequena mudança correspondente na saída da rede. Como iremos ver mais pra frente, essa propriedade
+  é o que tornará o aprendizado possível. Esquematicamente, isso é o que queremos (obviamente essa rede é 
+  muito simples para fazer reconhecimento de manuscritos!):  
+</p>
+<p>
+  <center>
+    <img src="images/tikz8.png"/>
+  </center>
+</p>
+<p>
+  Se uma pequena mudança em um peso (ou bias) causa uma pequena mudança na saída, então nós podemos usar esse
+  fato para modificar os pesos e biases para fazer nossa rede se comportar do jeito que queremos. Por exemplo,  
+  suponha que a rede classifique erradamente uma imagem de um "8" quando na verdade deveria ser um "9". E então
+  nós repetimos isso, mudando os pesos e biases de novo e de novo para produzir uma saida cada vez melhor. E então
+  essa rede estaria aprendendo.
+</p>
+<p>
+  O problema é que isso não é o que acontece quando nossa rede é formada por perceptrons. Na verdade, uma pequena
+  mudança nos pesos e biases de um perceptron da rede poderia causar uma mudança drástica na saida desse perceptron,
+  mudando a saída de $0$ para $1$ apenas com uma pequena alteração. Essa mudança drástica, em um único perceptron,
+  poderia causar uma completa mudança no comportamento da nossa rede. Considerando nosso último exemplo, 
+  mesmo que seja possível alterar os pesos de modo que a rede classifique de forma correta a imagem de um "9",
+  por conta das mudanças feitas na rede, a classificação de todos os outros dígitos acaba sendo comprometida.    
+  Isso torna difícil mudar gradualmente os valores dos pesos e biases de modo a se aproximar do 
+  comportamento desejado. Talvez exista um jeito de contornar esse problema. Mas não é imediatamente óbvio.
+</p>
+<p>
+  Nós podemos contornar esse problema introduzindo um novo tipo de neurônio artificial chamado neurônio <em>sigmoid</em>.
+  Neurônios Sigmoid são similares aos perceptrons, mas modificados para que pequenas mudanças nos pesos e bias causem  
+  apenas uma pequena mudança na saída. Esse é o fato crucial que permite que uma rede de neurônios sigmoid aprendam.
+  We can overcome this problem by introducing a new type of artificial
+</p>
+<p>
+  Certo, Deixe-me descrever o neurônio sigmoid. Nós iremos representá-lo da mesma maneira que representamos
+  perceptrons:
 <center>
 <img src="images/tikz9.png"/>
 </center>
+Assim como o perceptron, o neurônio sigmoid tem entradas, $x_1, x_2, /ldots$. Mas envés de ser apenas $0$ ou $1$
+essas entradas podem assumir valores <em>entre</em> $0$ e $1$. Então, por exemplo, $0.638\ldots$ é uma entrada válida
+para o neurônio sigmoid. E assim como o perceptron, o neurônio sigmoid tem pesos para cada entrada,$w_1, w_2,
+\ldots$ e um bias global, $b$. Mas a saída não é apenas $0$ ou $1$. A saída de um neurônio sigmoid seria 
+$\sigma(w \cdot x+b)$, onde $\sigma$ é chamado de <em>função sigmoid</em>*
+<span class="marginnote">
+*aliás, $\sigma$ é também chamado de <em>função logística</em>, e essa nova classe de neurônios é chamada de 
+<em>neurônios logísticos</em>. É útil lembrar dessas terminologias, já que esses termos são usados por grande 
+parte das pessoas trabalhando com redes neurais. No entanto, nós iremos usar a terminologia sigmoid.
+</span>
+
+
 Just like a perceptron, the sigmoid neuron has inputs, $x_1, x_2,
 \ldots$.  But instead of being just $0$ or $1$, these inputs can also
 take on any values <em>between</em> $0$ and $1$.  So, for instance,

@@ -12,7 +12,7 @@
     <meta name="citation_publisher" content="Determination Press">
     <meta name="citation_fulltext_world_readable" content="">
     <link rel="icon" href="nnadl_favicon.ICO" />
-    <title>Neural networks and deep learning</title>
+    <title>Redes Neurais e Deep Learning</title>
     <script src="assets/jquery.min.js"></script>
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
@@ -199,8 +199,10 @@ $('#toc_deep_learning_reveal').click(function() {
    $('#toc_deep_learning').toggle('fast', function() {});  
 });</script><p class="toc_not_mainchapter"><a href="sai.html">Appendix: Is there a <em>simple</em> algorithm for intelligence?</a></p><p class="toc_not_mainchapter"><a href="acknowledgements.html">Acknowledgements</a></p><p class="toc_not_mainchapter"><a href="faq.html">Frequently Asked Questions</a></p>
 <hr>
-<p class="sidebar"> If you benefit from the book, please make a small
-donation.  I suggest $5, but you can choose the amount.</p>
+<p class="sidebar"> 
+  Se você se beneficiou desse livro, por favor considere fazer uma pequena doação.
+  Eu sugiro $5, mas você pode escolher a quantia.
+</p>
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick">
@@ -209,27 +211,13 @@ donation.  I suggest $5, but you can choose the amount.</p>
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
 
-<p class="sidebar">Alternately, you can make a donation by sending me
-Bitcoin, at address <span style="font-size: 0.7em">1Kd6tXH5SDAmiFb49J9hknG5pqj7KStSAx</span></p>
+<p class="sidebar">
+  Como outra alternativa você pode fazer uma doação para o meu endereço de Bitcoin
+<span style="font-size: 0.7em">1Kd6tXH5SDAmiFb49J9hknG5pqj7KStSAx</span></p>
 
-<!--
-<hr>
-
-<p class="sidebar"> If you benefit from the book, please make a small
-donation.  I suggest $3, but you can choose the amount.</p>
-
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-
--->
 
 <hr>
-<span class="sidebar_title">Sponsors</span>
+<span class="sidebar_title">Patrocinadores</span>
 <br/>
 
 <a href="https://lambdalabs.com/?utm_source=neuralnetworksdeeplearning&utm_medium=banner&utm_campaign=blogin&utm_content=rbannerimg">
@@ -237,7 +225,9 @@ donation.  I suggest $3, but you can choose the amount.</p>
 </a>
 <br>
 <div style="line-height: 1.2; padding-bottom: 12px; font-size: 0.8;">
-  <a href="https://lambdalabs.com/?utm_source=neuralnetworksdeeplearning&utm_medium=banner&utm_campaign=blogin&utm_content=rtext">Deep Learning Workstations, Servers, and Laptops</a>
+  <a href="https://lambdalabs.com/?utm_source=neuralnetworksdeeplearning&utm_medium=banner&utm_campaign=blogin&utm_content=rtext">
+    Deep Learning Workstations, Servers, and Laptops
+  </a>
 </div>
 
 <a href='http://gsquaredcapital.com/'><img src='assets/gsquared.png' width='200px' style="padding: 5px 0px 10px 10px; border-style: none;"></a>
@@ -249,8 +239,8 @@ style="padding: 0px 0px 10px 8px; border-style: none;"></a>
 src='assets/visionsmarts.png' width='210px' style="padding: 0px 0px
 0px 0px; border-style: none;"></a> <br/> 
 
-<p class="sidebar">Thanks to all the <a
-href="supporters.html">supporters</a> who made the book possible, with
+<p class="sidebar">Agradeço a todos os <a
+href="supporters.html">apoiadores</a> que tornaram esse livro possível 
 especial thanks to Pavel Dudrenov.  Thanks also to all the
 contributors to the <a href="bugfinder.html">Bugfinder Hall of
 Fame</a>.  </p>
@@ -263,7 +253,7 @@ Fame</a>.  </p>
 <p class="sidebar"><a href="faq.html">Book FAQ</a></p>
 
 <p class="sidebar">
-<a href="https://github.com/mnielsen/neural-networks-and-deep-learning">Code repository</a></p>
+<a href="https://github.com/mnielsen/neural-networks-and-deep-learning">Repositório do Código</a></p>
 
 <p class="sidebar">
 <a href="http://eepurl.com/0Xxjb">Michael Nielsen's project announcement mailing list</a>
@@ -282,34 +272,30 @@ By <a href="http://michaelnielsen.org">Michael Nielsen</a> / Dec 2019
 </p>
 </div>
 <p>
-<em>Neural Networks and Deep Learning</em> is a free online book.  The
-book will teach you about:
+<em>Redes Neurais e Deep Learning</em> é um livro online completamente de graça. Nesse livro você ira aprender
+sobre:
 <ul>
-<li>Neural networks, a beautiful biologically-inspired programming
-paradigm which enables a computer to learn from observational data
-
-<li>Deep learning, a powerful set of techniques for learning in neural
-networks
-
+<li>
+  Redes neurais, um magnífico paradigma de programação biologicamente inspirado que permite que computadores
+  aprendam a partir de dados observacionais.
+<li>
+  Deep learning(aprendizado profundo), um conjunto de poderosas técnicas para aprendizado em redes neurais. 
 </ul>
-Neural networks and deep learning currently provide the best solutions
-to many problems in image recognition, speech recognition, and natural
-language processing.  This book will teach you many of the core
-concepts behind neural networks and deep learning.  
+  Redes neurais e deep learning atualmente oferece as melhores soluções para vários problemas em reconhecimento de 
+  imagem, reconhecimento de fala, e processamento de linguagem. Esse livro irá te ensinar os conceitos fundamentais
+  por trás de redes neurais e deep learning.
 </p>
 
-<p>For more details about the approach taken in the
-book, <a href="about.html">see here</a>.  Or you can jump directly
-to <a href="chap1.html">Chapter 1</a> and get started.
 <p>
-
+  Para mais detalhes sobre essa abordagem tomada no livro, <a href="about.html">veja aqui</a>. Ou então você
+  pode pular direto para o <a href="chap1.html">capítulo 1</a> e comece sua jornada.
+<p>
 </p>
-
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-</div><div class="footer"> <span class="left_footer"> In academic work,
-please cite this book as: Michael A. Nielsen, "Neural Networks and
-Deep Learning", Determination Press, 2015
-
+</div>
+<div class="footer"> <span class="left_footer"> 
+  Em trabalhos acadêmicos cite o livro como: Michael A. Nielsen, "Neural Networks and
+  Deep Learning", Determination Press, 2015
 <br/>
 <br/>
 
