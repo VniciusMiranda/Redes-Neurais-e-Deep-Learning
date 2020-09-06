@@ -1,6 +1,6 @@
 # Redes Neurais e Deep Learning
 
-Com excessão de portugal, o português é falado em países onde o acesso a aulas de inglês é elitisado e boa
+Com excessão de portugal, o português é falado em países onde o acesso a aulas de inglês é elitizado e boa
 parte da população se encontra em uma condição onde o acesso ao conhecimento fica limitado ao conteúdo disponibilizado na 
 língua portuguesa.
 
