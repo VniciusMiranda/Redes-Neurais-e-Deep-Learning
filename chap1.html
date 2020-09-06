@@ -471,7 +471,7 @@ de notação. Por causa disso, no resto do livro não usaremos o valor limite, s
   tivéssemos um perceptron sem entradas. Nesse caso a media ponderada $\sum_j w_j x_j$ seria sempre zero, e portanto 
   a saida do perceptron seria $1$ se $b > 0$ e seria $0$ se $b \leq 0$. Isso significa que, o perceptron iria 
   simplesmente exibir como saida um valor fixo e não o valor desejado(que seria $x_1$ no exemplo acima). É melhor pensar nas entradas dos perceptrons como não sendo perceptrons, mas sim como sendo unidades especiais que são
-  definidas pela saida dos valores desejados,x_1, x_2,\ldots$.
+  definidas pela saida dos valores desejados,$x_1, x_2,\ldots$.
 </p>
 <p>
   O exemplo da adição demonstra como uma rede de perceptrons pode simular um circuito contendo várias portas
@@ -513,6 +513,7 @@ de notação. Por causa disso, no resto do livro não usaremos o valor limite, s
   <center>
     <img src="images/tikz8.png"/>
   </center>
+    <h6><i>Uma pequena mudança em qualquer peso (ou bias) causa uma pequena mudança na saída</i></h6>
 </p>
 <p>
   Se uma pequena mudança em um peso (ou bias) causa uma pequena mudança na saída, então nós podemos usar esse
@@ -535,7 +536,6 @@ de notação. Por causa disso, no resto do livro não usaremos o valor limite, s
   Nós podemos contornar esse problema introduzindo um novo tipo de neurônio artificial chamado neurônio <em>sigmoid</em>.
   Neurônios Sigmoid são similares aos perceptrons, mas modificados para que pequenas mudanças nos pesos e bias causem  
   apenas uma pequena mudança na saída. Esse é o fato crucial que permite que uma rede de neurônios sigmoid aprendam.
-  We can overcome this problem by introducing a new type of artificial
 </p>
 <p>
   Certo, Deixe-me descrever o neurônio sigmoid. Nós iremos representá-lo da mesma maneira que representamos
@@ -543,7 +543,7 @@ de notação. Por causa disso, no resto do livro não usaremos o valor limite, s
 <center>
 <img src="images/tikz9.png"/>
 </center>
-Assim como o perceptron, o neurônio sigmoid tem entradas, $x_1, x_2, /ldots$. Mas envés de ser apenas $0$ ou $1$
+Assim como o perceptron, o neurônio sigmoid tem entradas, $x_1, x_2, \ldots$. Mas envés de ser apenas $0$ ou $1$
 essas entradas podem assumir valores <em>entre</em> $0$ e $1$. Então, por exemplo, $0.638\ldots$ é uma entrada válida
 para o neurônio sigmoid. E assim como o perceptron, o neurônio sigmoid tem pesos para cada entrada,$w_1, w_2,
 \ldots$ e um bias global, $b$. Mas a saída não é apenas $0$ ou $1$. A saída de um neurônio sigmoid seria 
@@ -552,53 +552,38 @@ $\sigma(w \cdot x+b)$, onde $\sigma$ é chamado de <em>função sigmoid</em>*
 *aliás, $\sigma$ é também chamado de <em>função logística</em>, e essa nova classe de neurônios é chamada de 
 <em>neurônios logísticos</em>. É útil lembrar dessas terminologias, já que esses termos são usados por grande 
 parte das pessoas trabalhando com redes neurais. No entanto, nós iremos usar a terminologia sigmoid.
-</span>
+</span>, ela é definida do seguinte modo:
 
-
-Just like a perceptron, the sigmoid neuron has inputs, $x_1, x_2,
-\ldots$.  But instead of being just $0$ or $1$, these inputs can also
-take on any values <em>between</em> $0$ and $1$.  So, for instance,
-$0.638\ldots$ is a valid input for a sigmoid neuron. Also just like a
-perceptron, the sigmoid neuron has weights for each input, $w_1, w_2,
-\ldots$, and an overall bias, $b$.  But the output is not $0$ or $1$.
-Instead, it's $\sigma(w \cdot x+b)$, where $\sigma$ is called the
-<em>sigmoid function</em>*<span class="marginnote">
-*Incidentally, $\sigma$ is sometimes
-  called the <em>logistic
-    function</em>, and this
-  new class of neurons called <em>logistic
-    neurons</em>.  It's useful
-  to remember this terminology, since these terms are used by many
-  people working with neural nets.  However, we'll stick with the
-  sigmoid terminology.</span>, and is defined
-by:
 <a class="displaced_anchor" name="eqtn3"></a>\begin{eqnarray} 
   \sigma(z) \equiv \frac{1}{1+e^{-z}}.
 \tag{3}\end{eqnarray}
-To put it all a little more explicitly, the output of a sigmoid neuron
-with inputs $x_1,x_2,\ldots$, weights $w_1,w_2,\ldots$, and bias $b$ is
+Tornando ess definição um pouco mais explícita, a saída do neurônio sigmoid com entradas $x_1,x_2,\ldots$, pesos
+$w_1,w_2,\ldots$, e bias $b$ é
 <a class="displaced_anchor" name="eqtn4"></a>\begin{eqnarray} 
   \frac{1}{1+\exp(-\sum_j w_j x_j-b)}.
-\tag{4}\end{eqnarray}</p><p>At first sight, sigmoid neurons appear very different to perceptrons.
-The algebraic form of the sigmoid function may seem opaque and
-forbidding if you're not already familiar with it.  In fact, there are
-many similarities between perceptrons and sigmoid neurons, and the
-algebraic form of the sigmoid function turns out to be more of a
-technical detail than a true barrier to understanding.</p><p>To understand the similarity to the perceptron model, suppose $z
-\equiv w \cdot x + b$ is a large positive number.  Then $e^{-z}
-\approx 0$ and so $\sigma(z) \approx 1$.  In other words, when $z = w
-\cdot x+b$ is large and positive, the output from the sigmoid neuron
-is approximately $1$, just as it would have been for a perceptron.
-Suppose on the other hand that $z = w \cdot x+b$ is very negative.
-Then $e^{-z} \rightarrow \infty$, and $\sigma(z) \approx 0$.  So when
-$z = w \cdot x +b$ is very negative, the behaviour of a sigmoid neuron
-also closely approximates a perceptron.  It's only when $w \cdot x+b$
-is of modest size that there's much deviation from the perceptron
-model.</p><p>What about the algebraic form of $\sigma$?  How can we understand
-that?  In fact, the exact form of $\sigma$ isn't so important - what
-really matters is the shape of the function when plotted.  Here's the
-shape:</p><p>
-
+\tag{4}\end{eqnarray}
+</p>
+<p>
+  A primeira vista, neurônios sigmoid parecem ser bem diferentes dos perceptrons. A forma algébrica da função
+  sigmoid parece meio opaca e proibitiva se você não está familiarizado com ela. No entanto, existem várias
+  similaridades entre perceptrons e neurônio sigmoid, e a forma algébrica da função sigmoid é muito mais um
+  detalhe técnico do que uma barreira para entender o conceito.
+</p>
+ <p>
+   Para entender a similaridade com o perceptron, suponha  que $z\equiv w \cdot x + b$ é um número positivo grande.
+   Então $e^{-z}\approx 0$ e portanto $\sigma(z) \approx 1$. Em outras palavras, quando $z = w\cdot x+b$ é grande e
+   positivo, a saída do neurônio sigmoid é aproximadamente $1$, ou seja, aproximadamente o que nós teriamos caso fosse 
+   um perceptron. Agora suponha que $z = w \cdot x+b$ é bem negativo. Portanto $e^{-z} \rightarrow \infty$ e $\sigma(z) \approx 0$. 
+   Então quando $z = w \cdot x +b$ é muito negativo, o comportamento do neurônio sigmoid também se aproxima ao de um 
+   perceptron. Apenas quando $w \cdot x+b$ é um tamanho entre $0$ e $1 o neurônio sigmoid se comporta diferente
+   de um perceptron.
+ </p>
+ <p>
+   E quanto a forma algébrica de $\sigma$? Como nós podemos entender isso? No fim das contas a exata forma de $\sigma$
+   não é tão importante - o que realmente importa é o formato da função quando desenhado no gráfico. O formato é o 
+   seguinte:
+</p>
+<p>
 <div id="sigmoid_graph"><a name="sigmoid_graph"></a></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
@@ -657,7 +642,7 @@ graph.append("text")
         .style("font-size", "16px") 
         .text("sigmoid function");
 </script>
-</p><p>This shape is a smoothed out version of a step function:</p><p>
+</p><p>Esse formato é basicamente um formato mais suave de uma função de degrau:</p><p>
 <div id="step_graph"></div>
 <script>
 function s(x) {return x < 0 ? 0 : 1;}
@@ -715,141 +700,145 @@ graph.append("text")
         .style("font-size", "16px") 
         .text("step function");
 </script>
-</p><p>If $\sigma$ had in fact been a step function, then the sigmoid neuron
-would <em>be</em> a perceptron, since the output would be $1$ or $0$
-depending on whether $w\cdot x+b$ was positive or
-negative*<span class="marginnote">
-*Actually, when $w \cdot x +b = 0$ the perceptron
-  outputs $0$, while the step function outputs $1$.  So, strictly
-  speaking, we'd need to modify the step function at that one point.
-  But you get the idea.</span>.  By using the actual $\sigma$ function we
-get, as already implied above, a smoothed out perceptron.  Indeed,
-it's the smoothness of the $\sigma$ function that is the crucial fact,
-not its detailed form.  The smoothness of $\sigma$ means that small
-changes $\Delta w_j$ in the weights and $\Delta b$ in the bias will
-produce a small change $\Delta \mbox{output}$ in the output from the
-neuron.  In fact, calculus tells us that $\Delta \mbox{output}$ is
-well approximated by
+</p>
+<p>
+  Se $\sigma$ fosse realmente uma função de degrau, então o neurônio sigmoid seria um perceptron, já que a 
+  saída seria $1$ ou $0$ dependendo se $w\cdot x+b$ <em>fosse</em> positivo ou negativo* 
+<span class="marginnote">
+  *Na verdade, quando $w \cdot x +b = 0$ o perceptron tem como saída $0$, enquanto a função degrau tem como saída $1$.
+  Portanto, caso fossemos abordar de forma mais rigorosa, a função degrau teria que ser modificada nesse ponto.
+  Mas acho que você entendeu a ideia.
+</span>.  
+  Usando a função $\sigma$ nós temos, como já citado acima, um perceptron mais suave. De fato, essa suavidade da 
+  função $\sigma$ é um fato crucial, e não sua forma detalhada. A suavidade de $\sigma$ significa que pequenas mudanças
+  $\Delta w_j$ nos pesos e $\Delta b$ no bias irão produzir uma pequena mudança $\Delta \mbox{output}$ na saída do neurônio.
+  Aliás, nós podemos aproximar $\Delta \mbox{output}$ para  
 <a class="displaced_anchor" name="eqtn5"></a>\begin{eqnarray} 
   \Delta \mbox{output} \approx \sum_j \frac{\partial \, \mbox{output}}{\partial w_j}
   \Delta w_j + \frac{\partial \, \mbox{output}}{\partial b} \Delta b,
 \tag{5}\end{eqnarray}
-where the sum is over all the weights, $w_j$, and $\partial \,
-\mbox{output} / \partial w_j$ and $\partial \, \mbox{output} /\partial
-b$ denote partial derivatives of the $\mbox{output}$ with respect to
-$w_j$ and $b$, respectively.  Don't panic if you're not comfortable
-with partial derivatives!  While the expression above looks
-complicated, with all the partial derivatives, it's actually saying
-something very simple (and which is very good news): $\Delta
-\mbox{output}$ is a <em>linear function</em> of the changes $\Delta w_j$
-and $\Delta b$ in the weights and bias.  This linearity makes it easy
-to choose small changes in the weights and biases to achieve any
-desired small change in the output.  So while sigmoid neurons have
-much of the same qualitative behaviour as perceptrons, they make it
-much easier to figure out how changing the weights and biases will
-change the output.</p><p>If it's the shape of $\sigma$ which really matters, and not its exact
-form, then why use the particular form used for $\sigma$ in
-Equation <span id="margin_301539119283_reveal" class="equation_link">(3)</span><span id="margin_301539119283" class="marginequation" style="display: none;"><a href="chap1.html#eqtn3" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">\begin{eqnarray} 
-  \sigma(z) \equiv \frac{1}{1+e^{-z}} \nonumber\end{eqnarray}</a></span><script>$('#margin_301539119283_reveal').click(function() {$('#margin_301539119283').toggle('slow', function() {});});</script>?  In fact, later in the book we will
-occasionally consider neurons where the output is $f(w \cdot x + b)$
-for some other <em>activation function</em> $f(\cdot)$.  The main thing
-that changes when we use a different activation function is that the
-particular values for the partial derivatives in
-Equation <span id="margin_244684310360_reveal" class="equation_link">(5)</span><span id="margin_244684310360" class="marginequation" style="display: none;"><a href="chap1.html#eqtn5" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">\begin{eqnarray} 
+
+  Onde a soma é de todos os pesos, $w_j$, e  $\partial \,\mbox{output} / \partial w_j$ e $\partial \, \mbox{output} /\partial
+  b$ denota a derivada parcial da saída $\mbox{output}$ com respeito a $w_j$ e $b$, respectivamente. Não entre
+  em pânico se você não está familiarizado com derivadas parciais! A expressão acima parece complicada, com as 
+  derivadas parciais, no entanto essa expressão está dizendo algo bastante simples: $\Delta\mbox{output}$ é uma
+  <em>função linear</em> das mudanças $\Delta w_j$ e $\Delta w_j$ nos pesos e bias. Essa linearidade torna mais
+  fácil escolher as pequenas mudanças nos pesos e biases que causam as mudanças desejadas na saída. Portanto, mesmo
+  os neurônios sigmoid tendo um comportamento muito parecido com perceptrons, eles conseguem tornar o trabalho de
+  descobrir como as mudanças nos pesos e biases estão influenciando a saída muito mais fácil.
+</p>
+
+<p>
+  Se é o formato de $\sigma$ que realmente importa, e não é exatamente sua forma, então porque usar essa forma
+  em particular para $\sigma$ na equação 
+   <span id="margin_301539119283_reveal" class="equation_link">(3)
+</span>
+<span id="margin_301539119283" class="marginequation" style="display: none;">
+  <a href="chap1.html#eqtn3" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">
+    \begin{eqnarray} 
+  \sigma(z) \equiv \frac{1}{1+e^{-z}} \nonumber\end{eqnarray}</a></span>
+  <script>$('#margin_301539119283_reveal').click(function() {$('#margin_301539119283').toggle('slow', function() {});});
+  </script>? Na verdade, no decorrer do livro nós vamos ocasionalmente considerar neurônios onde a saída é
+$f(w \cdot x + b)$ para alguma outra <em>função de ativação</em> $f(\cdot)$. O principal aspecto que muda ao usar
+uma função de ativação diferente é que os valores em particular das equações diferenciais 
+ <span id="margin_244684310360_reveal" class="equation_link">(5)</span><span id="margin_244684310360" class="marginequation" style="display: none;"><a href="chap1.html#eqtn5" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">\begin{eqnarray} 
   \Delta \mbox{output} \approx \sum_j \frac{\partial \, \mbox{output}}{\partial w_j}
-  \Delta w_j + \frac{\partial \, \mbox{output}}{\partial b} \Delta b \nonumber\end{eqnarray}</a></span><script>$('#margin_244684310360_reveal').click(function() {$('#margin_244684310360').toggle('slow', function() {});});</script> change.  It turns out that when we
-compute those partial derivatives later, using $\sigma$ will simplify
-the algebra, simply because exponentials have lovely properties when
-differentiated.  In any case, $\sigma$ is commonly-used in work on
-neural nets, and is the activation function we'll use most often in
-this book.</p><p>How should we interpret the output from a sigmoid neuron?  Obviously,
-one big difference between perceptrons and sigmoid neurons is that
-sigmoid neurons don't just output $0$ or $1$.  They can have as output
-any real number between $0$ and $1$, so values such as $0.173\ldots$
-and $0.689\ldots$ are legitimate outputs.  This can be useful, for
-example, if we want to use the output value to represent the average
-intensity of the pixels in an image input to a neural network.  But
-sometimes it can be a nuisance.  Suppose we want the output from the
-network to indicate either "the input image is a 9" or "the input
-image is not a 9".  Obviously, it'd be easiest to do this if the
-output was a $0$ or a $1$, as in a perceptron.  But in practice we can
-set up a convention to deal with this, for example, by deciding to
-interpret any output of at least $0.5$ as indicating a "9", and any
-output less than $0.5$ as indicating "not a 9".  I'll always
-explicitly state when we're using such a convention, so it shouldn't
-cause any confusion.</p><p>
-<h4><a name="exercises_191892"></a><a href="#exercises_191892">Exercises</a></h4><ul>
-<li><strong>Sigmoid neurons simulating perceptrons, part I</strong> $\mbox{}$ <br/>
-  Suppose we take all the weights and biases in a network of
-  perceptrons, and multiply them by a positive constant, $c > 0$.
-  Show that the behaviour of the network doesn't change.</p><p><li><strong>Sigmoid neurons simulating perceptrons, part II</strong> $\mbox{}$
-  <br/> Suppose we have the same setup as the last problem - a
-  network of perceptrons.  Suppose also that the overall input to the
-  network of perceptrons has been chosen.  We won't need the actual
-  input value, we just need the input to have been fixed.  Suppose the
-  weights and biases are such that $w \cdot x + b \neq 0$ for the
-  input $x$ to any particular perceptron in the network.  Now replace
-  all the perceptrons in the network by sigmoid neurons, and multiply
-  the weights and biases by a positive constant $c > 0$. Show that in
-  the limit as $c \rightarrow \infty$ the behaviour of this network of
-  sigmoid neurons is exactly the same as the network of perceptrons.
-  How can this fail when $w \cdot x + b = 0$ for one of the
-  perceptrons?
-</ul></p><p><h3><a name="the_architecture_of_neural_networks"></a><a href="#the_architecture_of_neural_networks">The architecture of neural networks</a></h3></p><p>In the next section I'll introduce a neural network that can do a
-pretty good job classifying handwritten digits.  In preparation for
-that, it helps to explain some terminology that lets us name different
-parts of a network.  Suppose we have the network:
+  \Delta w_j + \frac{\partial \, \mbox{output}}{\partial b} \Delta b \nonumber\end{eqnarray}</a></span><script>$('#margin_244684310360_reveal').click(function() {$('#margin_244684310360').toggle('slow', function() {});});</script>
+  mudam. Acontece que nós calculamos as derivadas parciais depois, usando $\sigma$ nós vamos simplificar a algebra,
+  pois exponenciais tem lindas características quando diferenciadas. Nesse caso, $\sigma$ é vastamente usada em 
+  trabalhos de rede neural, e é a função de ativação que mais iremos usar nesse livro.
+</p>
+<p>
+  Como nós devemos interpretar a saída de um neurônio sigmoid? Obviamente, uma grande diferença entre perceptrons
+  e sigmoids é que neurônios sigmoids não tem como saída apenas $0$ e $1$. Eles podem ter como saída qualquer número
+  real entre $0$ e $1$, portanto valores como $0.173\ldots$ e $0.689\ldots$ são valores de saída legítmos.
+  Essaa característica é bem útil. por exemplo, se nós queremos usar o valor de saída para representar a intensidade
+  média dos pixels de uma imagem de entrada para uma rede neural. Mas as vezes pode ser incômodo. Suponha que 
+  nós queremos que a saída da rede indique se "a a imagem de entrada é um 9" ou "se a imagem de entrada não é um 9". 
+  Obviamente, seria bem mais fácil fazer isso se a saída fosse apenas $0$ e $1$, como é em um perceptron. Mas em prática
+  nós podemos estabelecer uma convenção para lidar com isso, por exemplo, se decidirmos interpretar qualquer saída que seja
+  ao menos $0.5$ como indicando um "9", e qualquer saída menor que $0.5$ como indicando "não é um 9". Eu sempre
+  irei dizer quando estivermos usando convenções assim para não causar nenhuma confusão.
+</p>
+<p>
+<h4><a name="exercises_191892"></a><a href="#exercises_191892">Exercícios</a></h4><ul>
+<li>
+  <strong>Neurônios sigmoid simulando perceptrons, parte I</strong> $\mbox{}$ <br/>
+  Suponha que pegamos todos os pesos e biases de uma rede de perceptrons, multiplicamos por uma constante
+  positiva, $c > 0$. Mostre que o comportamento da rede não irá mudar.
+</p>
+<p>
+  <li><strong>Neurônios sigmoid simulando perceptrons, parte II<</strong> $\mbox{}$
+  <br/>
+  Suponha que nós temos o mesmo context do problema anterior - uma rede de perceptrons. Suponha também que 
+  a entrada geral da rede de perceptrons já foi escolhida. Nós não iremos precisar do valor de entrada em si, 
+  nós iremos apenas precisar que a entrada esteja fixada. Suponha que os pesos e biases são valores tais que
+  $w \cdot x + b \neq 0$ para uma entrada $x$ para qualquer neurônio em particular. Agora substitua todos os
+  perceptrons da rede por neurônios sigmoid, e multiplique os pesos e biases por uma constante positiva $c > 0$.  
+  Mostre que no limite $c \rightarrow \infty$ o comportamento da rede de neurônios sigmoid é o mesmo da rede
+  de perceptrons. Como isso poderia falhar quando $w \cdot x + b = 0$ para um dos perceptrons?
+  </ul>
+</p>
+<p>
+  <h3>
+    <a name="the_architecture_of_neural_networks"></a><a href="#the_architecture_of_neural_networks">A arquitetura de redes neurais</a>
+  </h3>
+</p>
+<p>
+  Nessa próxima sessão eu irei introduzir uma rede neural que classifica digitos manuscritos. Em preparação para 
+  isso, ajuda se nós olharmos um pouco da terminologia que permite nomear difetentes partes de uma rede. Suponha
+  que temos a rede:
 <center>
 <img src="images/tikz10.png"/>
 </center>
-As mentioned earlier, the leftmost layer in this network is called the
-input layer, and the neurons within the
-layer are called <em>input neurons</em>.
-The rightmost or <em>output</em> layer
-contains the <em>output neurons</em>, or,
-as in this case, a single output neuron.  The middle layer is called a
-<em>hidden layer</em>, since the neurons in
-this layer are neither inputs nor outputs.  The term "hidden"
-perhaps sounds a little mysterious - the first time I heard the term
-I thought it must have some deep philosophical or mathematical
-significance - but it really means nothing more than "not an input
-or an output".  The network above has just a single hidden layer, but
-some networks have multiple hidden layers.  For example, the following
-four-layer network has two hidden layers:
+  Como mencionado anteriormente, a camada mais a esquerda dessa rede é chamada de camada de entrada, e os neurônios
+  pertencentes a essa camada são chamados de <em>neurônios de entrada</em>. A camada mais a direita ou <em>camada
+  de saída</em> contém os <em>neurônios de saída</em>, ou, nesse caso, um único neurônio de saída. A camada do meio
+  é chamada <em>camada escondida</em>, já que os neurônios dessa camada não são nem de entrada ou saída. O termo
+  "escondida" talvez soe um pouco misterioso - a primeira vez que eu escutei esse termo eu pensei que tivesse 
+  algo profundamente filosófico ou matemático escondido nesses neurônios - mas na real não significa nada além de
+  "não é nem entrada nem saída". A rede acima tem apenas uma camada escondida, mas em algumas redes nós temos multiplas
+  camadas escondidas. Por exemplo, a seguinte rede de quatro camadas tem duas camadas escondidas:
 <center>
 <img src="images/tikz11.png"/>
 </center>
-Somewhat confusingly, and for historical reasons, such multiple layer
-networks are sometimes called <em>multilayer perceptrons</em> or
-<em>MLPs</em>, despite being made up of sigmoid neurons, not
-perceptrons.  I'm not going to use the MLP terminology in this book,
-since I think it's confusing, but wanted to warn you of its existence.</p><p>The design of the input and output layers in a network is often
-straightforward.  For example, suppose we're trying to determine
-whether a handwritten image depicts a "9" or not.  A natural way to
-design the network is to encode the intensities of the image pixels
-into the input neurons. If the image is a $64$ by $64$ greyscale
-image, then we'd have $4,096 = 64 \times 64$ input neurons, with the
-intensities scaled appropriately between $0$ and $1$.  The output
-layer will contain just a single neuron, with output values of less
-than $0.5$ indicating "input image is not a 9", and values greater
-than $0.5$ indicating "input image is a 9 ".</p><p></p><p></p><p>
-While the design of the input and output layers of a neural network is
-often straightforward, there can be quite an art to the design of the
-hidden layers.  In particular, it's not possible to sum up the design
-process for the hidden layers with a few simple rules of thumb.
-Instead, neural networks researchers have developed many design
-heuristics for the hidden layers, which help people get the behaviour
-they want out of their nets.  For example, such heuristics can be used
-to help determine how to trade off the number of hidden layers against
-the time required to train the network.  We'll meet several such
-design heuristics later in this book. </p><p>Up to now, we've been discussing neural networks where the output from
-one layer is used as input to the next layer.  Such networks are
-called <em>feedforward</em>
-neural networks.  This means there are no loops in the network -
-information is always fed forward, never fed back.  If we did have
-loops, we'd end up with situations where the input to the $\sigma$
-function depended on the output.  That'd be hard to make sense of, and
-so we don't allow such loops.</p><p>However, there are other models of artificial neural networks in which
+  Um pouco confuso, e por razões históricas, essas redes de múltiplas camadas são chamadas <em>multilayer perceptrons</em>
+  ou <em>perceptrons de múltiplas camadas</em> para abreviar <em>MLPs</em>, apesar de elas serem feitas de neurônios
+  sigmoid, e não perceptrons. Eu não irei usar a terminologia das MLPs nesse livro, pois eu penso que é confuso,
+  mas eu gostaria de alertar você da existência dessa terminologia.
+</p>
+<p>
+  O design das camadas de entrada e saída das redes é na maioria das vezes bem direta. Por exemplo, suponha que
+  nós estamos tentando determinar se uma imagem manuscrita é um "9" ou não. O modo mais natural de fazer essa rede
+  é codificar as intensidades dos pixels da imagem para os neurônios de entrada. Se uma imagem tem dimensões $64$
+  por $64$ e é preto e branca, então nós temos $4,096 = 64 \times 64$ neurônios de entrada com intensidades em escalas
+  que estão entre $0$ e $1$. A camada de saída irá conter apenas um neurônio, com valores de saída menores do que
+  $0.5$ indicando "a imagem de entrada não é um 9", e valores maiores do que $0.5$ indicando "a imagem de entrada
+  é um 9".
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+  Enquanto o design das camadas de entrada e de saída de uma rede neural é na maioria das vezes bem direta,
+  o design das camadas escondidas - <i>hidden layers</i> - por sua vez, tem aspectos que podem ser considerados 
+  artísticos. Em particular, não é possível resumir o processo de fazer o design de hidden layers com uma simples
+  regra ou método. Envés disso, pesquisadores de redes neurais desenvolveram diversos designs para as camadas escondidas,
+  de modo que se possa conseguir o comportamento desejado para sua rede. Por exemplo, esses designs podem ser usados
+  para determinar como decidir-se quanto a relação entre o tempo de treino de uma determinada rede e seu número de camadas.
+  Nós iremos encontrar vários desses designs ao longo desse livro.
+</p>
+
+<p>
+  Até agora, nós temos discutido redes neurais onde a saída de uma camada é usada serve como entrada da próxima camada.
+  Essas redes são chamadas de <em>feedforward neural networks</em> ou <em>redes neurais feedfoward</em>. Isso significa
+  que não a loop na rede - a informação é sempre passada para frente, nunca para trás. Se nós tivéssemos loops,
+  nós acabaríamos em situações onde a entrada da função $\sigma$ depende da saída. E isso é díficil de se lidar,
+  portanto nós não permitimos a existência desses loops.
+</p>
+<p>
+  However, there are other models of artificial neural networks in which
 feedback loops are possible.  These models are called
 <a href="http://en.wikipedia.org/wiki/Recurrent_neural_network">recurrent
   neural networks</a>. The idea in these models is to have neurons which
