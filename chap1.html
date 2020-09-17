@@ -838,28 +838,58 @@ uma função de ativação diferente é que os valores em particular das equaç�
   portanto nós não permitimos a existência desses loops.
 </p>
 <p>
-  However, there are other models of artificial neural networks in which
-feedback loops are possible.  These models are called
-<a href="http://en.wikipedia.org/wiki/Recurrent_neural_network">recurrent
-  neural networks</a>. The idea in these models is to have neurons which
-fire for some limited duration of time, before becoming quiescent.
-That firing can stimulate other neurons, which may fire a little while
-later, also for a limited duration.  That causes still more neurons to
-fire, and so over time we get a cascade of neurons firing.  Loops
-don't cause problems in such a model, since a neuron's output only
-affects its input at some later time, not instantaneously.</p><p></p><p>Recurrent neural nets have been less influential than feedforward
-networks, in part because the learning algorithms for recurrent nets
-are (at least to date) less powerful.  But recurrent networks are
-still extremely interesting.  They're much closer in spirit to how our
-brains work than feedforward networks.  And it's possible that
-recurrent networks can solve important problems which can only be
-solved with great difficulty by feedforward networks.  However, to
-limit our scope, in this book we're going to concentrate on the more
-widely-used feedforward networks.</p><p><h3><a name="a_simple_network_to_classify_handwritten_digits"></a><a href="#a_simple_network_to_classify_handwritten_digits">A simple network to classify handwritten digits</a></h3></p><p>Having defined neural networks, let's return to handwriting
-recognition.  We can split the problem of recognizing handwritten
-digits into two sub-problems.  First, we'd like a way of breaking an
-image containing many digits into a sequence of separate images, each
-containing a single digit.  For example, we'd like to break the image</p><p><center><img src="images/digits.png" width="300px"></center></p><p>into six separate images,</p><p><center><img src="images/digits_separate.png" width="440px"></center> </p><p>We humans solve this <em>segmentation
+  No entanto, existem outros modelos de redes de neurônios artificiais onde loops de feedback são possíveis.
+  Esses modelos são chamados 
+<a href="http://en.wikipedia.org/wiki/Recurrent_neural_network">
+  redes neurais recorentes
+  </a>. 
+  A ideia desses modelos é ter neurônios que disparam em uma duração limitada de tempo, antes de ficarem em 
+  repouso. Esse disparo pode estimular outros neurônios, que talvez disparem também um pouco depois, também por
+  um tempo limitado. Isso faz ainda mais neurônios dispararem, e então com o tempo nós temos uma reação em cadeia
+  de neurônios disparando. Loops não causam problemas em modelos como esse, já que a saída de um neurônio
+  só afeta a sua entrada depois de um tempo, não instantaneamente. 
+ </p>
+ <p>
+ </p>
+ <p>
+   Redes neurais recorentes tem sido menos influentes que redes feedfoward, em parte porque os algoritimos
+   de aprendizado para redes recorentes são menos poderosas. Mas mesmo assim,redes recorentes são extremamente
+   interessantes. Elas estão muito mais próximas do modo como o nosso cérebro realmente funciona se comparado
+   com redes feedfoward. E em alguns casos, redes recorentes podem resolver de forma mais eficiente alguns 
+   problemas do que redes feedfoward. No entanto, para limitar o nosso escopo, nesse livro nós iremos nos
+   concentrar nas, amplamente mais utilizadas, redes feedfoward.
+</p>
+<p>
+  <h3>
+    <a name="a_simple_network_to_classify_handwritten_digits"></a>
+    <a href="#a_simple_network_to_classify_handwritten_digits">
+      Uma rede simples para classificar dígitos manuscritos
+    </a>
+  </h3>
+</p>
+  <p>
+    Tendo definido o que são redes neurais, vamos retornar ao reconhecimento de digitos manuscritos.
+    Nós podemos dividir o problema de reconhecer digitos em dois sub problemas. Primeiro, precisamos
+    quebrar uma imagem contendo multiplos digitos em uma sequencia de imagens separadas contendo, cada
+    uma, contendo apenas um dígito. Por exemplo, nós gostariamos de quebrar a imagem 
+  </p>
+  <p>
+    <center>
+      <img src="images/digits.png" width="300px">
+    </center>
+  </p>
+  <p>
+    em seis imagens separadas, 
+  </p>
+  <p>
+    <center>
+      <img src="images/digits_separate.png" width="440px">
+    </center> 
+  </p>
+  <p>
+    Nós humanos resolvemos esse <em>problema de segmentação</em> com facilidade, mas é desafiador para
+    um programa de computador para quebrar uma imagem assim corretamente. 
+    We humans solve this <em>segmentation
   problem</em> with ease, but it's challenging
 for a computer program to correctly break up the image.  Once the
 image has been segmented, the program then needs to classify each
