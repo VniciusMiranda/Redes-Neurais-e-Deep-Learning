@@ -888,138 +888,203 @@ uma função de ativação diferente é que os valores em particular das equaç�
   </p>
   <p>
     Nós humanos resolvemos esse <em>problema de segmentação</em> com facilidade, mas é desafiador para
-    um programa de computador para quebrar uma imagem assim corretamente. 
-    We humans solve this <em>segmentation
-  problem</em> with ease, but it's challenging
-for a computer program to correctly break up the image.  Once the
-image has been segmented, the program then needs to classify each
-individual digit.  So, for instance, we'd like our program to
-recognize that the first digit above,</p><p><center><img src="images/mnist_first_digit.png" width="64px"></center></p><p>is a 5.</p><p>We'll focus on writing a program to solve the second problem, that is,
-classifying individual digits.  We do this because it turns out that
-the segmentation problem is not so difficult to solve, once you have a
-good way of classifying individual digits.  There are many approaches
-to solving the segmentation problem.  One approach is to trial many
-different ways of segmenting the image, using the individual digit
-classifier to score each trial segmentation.  A trial segmentation
-gets a high score if the individual digit classifier is confident of
-its classification in all segments, and a low score if the classifier
-is having a lot of trouble in one or more segments.  The idea is that
-if the classifier is having trouble somewhere, then it's probably
-having trouble because the segmentation has been chosen incorrectly.
-This idea and other variations can be used to solve the segmentation
-problem quite well.  So instead of worrying about segmentation we'll
-concentrate on developing a neural network which can solve the more
-interesting and difficult problem, namely, recognizing individual
-handwritten digits.</p><p>To recognize individual digits we will use a three-layer neural
-network:</p><p><center>
-<img src="images/tikz12.png"/>
-</center></p><p>The input layer of the network contains neurons encoding the values of
-the input pixels.  As discussed in the next section, our training data
-for the network will consist of many $28$ by $28$ pixel images of
-scanned handwritten digits, and so the input layer contains $784 = 28
-\times 28$ neurons.  For simplicity I've omitted most of the $784$
-input neurons in the diagram above.  The input pixels are greyscale,
-with a value of $0.0$ representing white, a value of $1.0$
-representing black, and in between values representing gradually
-darkening shades of grey.</p><p>The second layer of the network is a hidden layer.  We denote the
-number of neurons in this hidden layer by $n$, and we'll experiment
-with different values for $n$.  The example shown illustrates a small
-hidden layer, containing just $n = 15$ neurons.</p><p>The output layer of the network contains 10 neurons.  If the first
-neuron fires, i.e., has an output $\approx 1$, then that will indicate
-that the network thinks the digit is a $0$.  If the second neuron
-fires then that will indicate that the network thinks the digit is a
-$1$.  And so on.  A little more precisely, we number the output
-neurons from $0$ through $9$, and figure out which neuron has the
-highest activation value.  If that neuron is, say, neuron number $6$,
-then our network will guess that the input digit was a $6$.  And so on
-for the other output neurons.</p><p>You might wonder why we use $10$ output neurons.  After all, the goal
-of the network is to tell us which digit ($0, 1, 2, \ldots, 9$)
-corresponds to the input image.  A seemingly natural way of doing that
-is to use just $4$ output neurons, treating each neuron as taking on a
-binary value, depending on whether the neuron's output is closer to
-$0$ or to $1$.  Four neurons are enough to encode the answer, since
-$2^4 = 16$ is more than the 10 possible values for the input digit.
-Why should our network use $10$ neurons instead?  Isn't that
-inefficient?  The ultimate justification is empirical: we can try out
-both network designs, and it turns out that, for this particular
-problem, the network with $10$ output neurons learns to recognize
-digits better than the network with $4$ output neurons.  But that
-leaves us wondering <em>why</em> using $10$ output neurons works better.
-Is there some heuristic that would tell us in advance that we should
-use the $10$-output encoding instead of the $4$-output encoding?</p><p>To understand why we do this, it helps to think about what the neural
-network is doing from first principles.  Consider first the case where
-we use $10$ output neurons.  Let's concentrate on the first output
-neuron, the one that's trying to decide whether or not the digit is a
-$0$.  It does this by weighing up evidence from the hidden layer of
-neurons.  What are those hidden neurons doing?  Well, just suppose for
-the sake of argument that the first neuron in the hidden layer detects
-whether or not an image like the following is present:</p><p><center><img src="images/mnist_top_left_feature.png" width="130px"></center></p><p>It can do this by heavily weighting input pixels which overlap with
-the image, and only lightly weighting the other inputs.  In a similar
-way, let's suppose for the sake of argument that the second, third,
-and fourth neurons in the hidden layer detect whether or not the
-following images are present:</p><p><center><img src="images/mnist_other_features.png" width="424px"></center></p><p>As you may have guessed, these four images together make up the $0$
-image that we saw in the line of digits shown <a
-  href="#complete_zero">earlier</a>:</p><p><center><img src="images/mnist_complete_zero.png" width="130px"></center></p><p>So if all four of these hidden neurons are firing then we can conclude
-that the digit is a $0$.  Of course, that's not the <em>only</em> sort
-of evidence we can use to conclude that the image was a $0$ - we
-could legitimately get a $0$ in many other ways (say, through
-translations of the above images, or slight distortions).  But it
-seems safe to say that at least in this case we'd conclude that the
-input was a $0$.</p><p></p><p></p><p></p><p>Supposing the neural network functions in this way, we can give a
-plausible explanation for why it's better to have $10$ outputs from
-the network, rather than $4$.  If we had $4$ outputs, then the first
-output neuron would be trying to decide what the most significant bit
-of the digit was.  And there's no easy way to relate that most
-significant bit to simple shapes like those shown above.  It's hard to
-imagine that there's any good historical reason the component shapes
-of the digit will be closely related to (say) the most significant bit
-in the output.</p><p>Now, with all that said, this is all just a heuristic.  Nothing says
-that the three-layer neural network has to operate in the way I
-described, with the hidden neurons detecting simple component shapes.
-Maybe a clever learning algorithm will find some assignment of weights
-that lets us use only $4$ output neurons.  But as a heuristic the way
-of thinking I've described works pretty well, and can save you a lot
-of time in designing good neural network architectures.</p><p><h4><a name="exercise_513527"></a><a href="#exercise_513527">Exercise</a></h4><ul>
-<li> There is a way of determining the bitwise representation of a
-  digit by adding an extra layer to the three-layer network above.
-  The extra layer converts the output from the previous layer into a
-  binary representation, as illustrated in the figure below.  Find a
-  set of weights and biases for the new output layer.  Assume that the
-  first $3$ layers of neurons are such that the correct output in the
-  third layer (i.e., the old output layer) has activation at least
-  $0.99$, and incorrect outputs have activation less than $0.01$.
-</ul></p><p><center>
-<img src="images/tikz13.png"/>
-</center></p><p></p><p></p><p></p><p><h3><a name="learning_with_gradient_descent"></a><a href="#learning_with_gradient_descent">Learning with gradient descent</a></h3></p><p></p><p>Now that we have a design for our neural network, how can it learn to
-recognize digits?  The first thing we'll need is a data set to learn
-from - a so-called training data set.  We'll use the
- <a href="http://yann.lecun.com/exdb/mnist/">MNIST
-  data set</a>, which contains tens of thousands of scanned images of
-handwritten digits, together with their correct classifications.
-MNIST's name comes from the fact that it is a modified subset of two
-data sets collected by
-<a href="http://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology">NIST</a>,
-the United States' National Institute of Standards and
-Technology. Here's a few images from MNIST:</p><p><center><img src="images/digits_separate.png" width="420px"></center> </p><p>As you can see, these digits are, in fact, the same as those shown
-at the <a
-  href="#complete_zero">beginning of this chapter</a> as a challenge
-to recognize.  Of course, when testing our network we'll ask it to
-recognize images which aren't in the training set!</p><p>The MNIST data comes in two parts.  The first part contains 60,000
-images to be used as training data.  These images are scanned
-handwriting samples from 250 people, half of whom were US Census
-Bureau employees, and half of whom were high school students.  The
-images are greyscale and 28 by 28 pixels in size.  The second part of
-the MNIST data set is 10,000 images to be used as test data.  Again,
-these are 28 by 28 greyscale images.  We'll use the test data to
-evaluate how well our neural network has learned to recognize digits.
-To make this a good test of performance, the test data was taken from
-a <em>different</em> set of 250 people than the original training data
-(albeit still a group split between Census Bureau employees and high
-school students).  This helps give us confidence that our system can
-recognize digits from people whose writing it didn't see during
-training.</p><p>We'll use the notation $x$ to denote a training input.  It'll be
-convenient to regard each training input $x$ as a $28 \times 28 =
-784$-dimensional vector.  Each entry in the vector represents the grey
+    um programa de computador para quebrar uma imagem assim corretamente. Após a imagem ser segmentada,
+    o programa então precisa classificar cada dígito individual. Então, por exemplo, nós gostariamos que
+    o nosso programa fosse capaz de reconhecer o primeiro dígito acima,
+  </p>
+<p>
+  <center>
+    <img src="images/mnist_first_digit.png" width="64px">
+  </center>
+</p>
+<p>
+  é um 5.
+</p>
+<p>
+  Nós iremos focar em escrever um programa para resolver o segundo problema, que é, classificar os
+  dígitos individuais. Nós iremos fazer isso porque o problema de segmentação não é tão difícil de 
+  resolver. Existem várias formas de abordar o problema de segmentação. Uma dessas abordagens é tentar
+  várias diferentes formas de segmentar a imagem, usando um dígito individual para classificar os pontos
+  de cada tentativa de segmentação. Uma tentativa de segmentação ganha uma pontuação alta se o dígito 
+  individual de classificador está de acordo com sua classificação em todos os segmentos, e uma pontuação
+  baixa se o classificador está tendo muitos problemas em um ou mais segmentos. A ideia é se o classificador
+  está tendo problema em algum lugar, então é provável que esteja tendo esse problema porque a segmentação
+  foi escolhida incorretamente. Essa ideia e outras variações podem ser usadas para resolver o problema da
+  segmentação de forma satisfatória. Então envés de se preocupar com a segmentação nós iremos nos preocupar
+  com um problema mais interessante e difícil, chamado, reconhecimento de dígitos manuscrítos individuais.
+
+</p>
+<p>
+  Para reconhecer um dígito individual nós iremos usar uma rede neural de três camadas:
+</p>
+<p>
+  <center>
+    <img src="images/tikz12.png"/>
+  </center>
+</p>
+<p>
+  A camada de entrada da rede contém neurônios codificando os valores de entradas dos pixels de entrada.
+  Como discutido na seção anterior, nossos dados de treino para a rede consiste de várias imagens de 
+  $28$ por $28$ pixels de dígitos manuscritos escaneados, e portanto a camada de entrada contém $784 = 28
+  \times 28$ neurônios. Por questão de simplicidade eu omiti grande parte dos $784$ neurônios de entrada no
+  diagrama acima. Os pixels de entrada são preto e branco, com o valor $0.0$ representando brancho, e o valor
+  de $1.0$ representando preto, e os valores entre, representam os diferentes tons de cinza.
+</p>
+<p>
+  A segunda camada da rede é uma camada escondida. Nós denotamos o número de neurônios nessa camada escondida
+  por $n$, e nós iremos experimentar com diferentes valores para $n$. O exemplo ilustra uma pequena camada
+  escondida, contendo apenas $n = 15$ neurônios.
+</p>
+<p>
+  A camada de saída da rede contém 10 neurônios. Se o primeiro neurônio dispara, i.e., tem a saída $\approx 1$,
+  então isso indica que a rede acha que o dígito é um $0$. Se o segundo neurônio dispara então isso indica
+  que a rede acha que o dígito é um $1$. E por aí vai. Sendo um pouvo mais preciso, nós numeramos os neurônios de 
+  saída de $0$ a $9$, e vemos qual neurônio tem o maior valor de ativação. Se esse neurônio for o neurônio número
+  $6$ por exemplo, então a rede acha que o dígito de entrada é um $6$. E a mesma coisa vale para os outros neurônios.
+
+</p>
+<p>
+  Talvez você esteja se perguntando porque nós usamos $10$ neurônios de saída. Afinal,o objetivo da rede é dizer
+  que dígito ($0, 1, 2, \ldots, 9$) corresponde a imagem de entrada. Um jeito natural de fazer isso é usar apenas
+  $4$ neurônios de saída, tratando cada neurônio como se estivesse recebendo um valor binário, dependendo se a saída
+  do neurônio é próxima de $0$ ou de $1$. Quatro neurônios são suficientes para codificar a resposta, já que 
+  $2^4 = 16$ é mais do que 10 valores possíveis de entrada de dígitos. Porque usar uma rede que usa $10$ neurônios 
+  então? Não seria ineficiente? A justificativa é empírica: nós podemos testar ambos os designs, mas acontece que,
+  para esse problema em particular, a rede de $10$ neurônios de saída aprende a reconhecer dígitos melhor do que a
+  rede de $4$ dígitos de saída. Mas isso deixa a dúvida, <em>porque</em> usar $10$ neurônios é melhor. Existe alguma
+  heurística que poderia nos dizer adiantado se nós devemos usar $10$ neurônios de saída ou $4$?
+</p>
+<p>
+  Para entender o porquê de nós fazermos isso, ajuda pensar sobre o que a rede neural está fazendo desde os
+  primeiros princípios. Considere o primeiro caso onde nós usamos $10$ neurônios de saída. Vamos concentrar
+  no primeiro neurônio de saída, o que está tentando decidir se o dígito é um ou não um $0$. Ele faz isso
+  pesando as evidências fornecidas pela camada escondida de neurônios. E o que esses neurônios escondidos estão
+  fazendo? Bem, apenas suponha em prol do argumento que que o primeiros neurônio na camada escondida detecta
+  se uma imagem é ou não como essa:
+</p>
+<p>
+  <center>
+    <img src="images/mnist_top_left_feature.png" width="130px">
+  </center>
+</p>
+<p>
+  Ele faz isso pesando intensamente os pixels de entrada que sobrepõem com a imagem, e pesando de leve as 
+  outras entradas. De maneira similar, vamos supor que em prol do argumento que o segundo, terceiro, e quarto
+  neurônio na camada escondida detectam se as seguintes imagens estão presentes:
+</p>
+<p>
+  <center>
+    <img src="images/mnist_other_features.png" width="424px">
+  </center>
+</p>
+<p>
+  Como você já deve ter advinhado, essas quatro imagens juntas formam a imagem do $0$ que nós vimos na linha
+  de dígitos mostrado <a href="#complete_zero">anteriormente</a>:
+</p>
+<p>
+  <center>
+    <img src="images/mnist_complete_zero.png" width="130px">
+  </center>
+</p>
+<p>
+  Portanto, se todos esses quatro neurônios escondidos estão disparando então podemos concluir que o dígito é
+  um $0$. Claro, não são <em>apenas</em> esses tipos de evidências que nós podemos usar para concluir que
+  a imagem é um $0$ - nós poderiamos classificar esse $0$ de diferentes outras formas (digamos, através 
+  de tranlações das imagens acima, ou leves distorções). Mas parece ser mais seguro dizer que ao menos nesse caso
+  nós concluímos que a saída era um $0$.
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+  Supondo que redes neurais funcionam desse modo, nós podemos dar uma explicação plausível para o porquê de ser
+  melhor ter uma rede com $10$ saídas do que uma com $4$, então o primeiro neurônio de saída estaria tentando 
+  decidir qual era o bit mais importante do dígito. E não tem jeito fácil de relacionar esse dígito mais importante
+  com formas simples como as mostradas acima. É difícil imaginar que exista alguma boa razão histórica para que
+  as formas que compõem o dígito sejam intimamente relacionadas (digamos) ao bit mais significante na saída. 
+</p>
+<p>
+  Agora, com tudo isso dito, isso tudo é apenas uma heurística. Nada diz que essa rede neural de três camadas
+  tem que operar dessa maneira descrita, com os neurônios escondidos (aqueles das camadas entre a saída e a entrada)
+  detectando formas componentes simples. Talvez a algoritimo de aprendizado inteligente irá achar alguma atribuição
+  de pesos que permita nós usarmos apenas $4$ neurônios de saída. Mas como uma heurística a maneira de pensar que eu
+  descrevi funciona bem, e pode te salvar um bom tempo na hora de fazer o bons designs de rede neurais.
+</p>
+<p>
+  <h4>
+    <a name="exercise_513527"></a>
+    <a href="#exercise_513527">Exercícios</a>
+  </h4>
+  <ul>
+    <li>
+      Existe uma forma de determinar a representação em bitwise de um dígito através da adição de uma camada extra
+      na rede de três camadas cima. A camada extra converte a saída da camada anterior para uma representação binária,
+      como ilustrado na figura abaixo. Encontre um conjunto de pesos e biases para a nova camada de saída. Assuma que
+      as $3$ primeiras camadas de neurônios são tais que a saída correta na terceira camada (i.e., a antiga camada de 
+      saída) tem uma ativação de pelo menos $0.99$, e as saídas incorretas tem ativação de menos que $0.01$.
+  </ul>
+</p>
+<p>
+  <center>
+    <img src="images/tikz13.png"/>
+  </center>
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+  <h3>
+    <a name="learning_with_gradient_descent">
+    </a>
+    <a href="#learning_with_gradient_descent">
+      Learning with gradient descent
+    </a>
+  </h3>
+</p>
+<p>
+</p>
+<p>
+  Agora que nós temos um design para a nossa rede neural, como ela pode aprender a reconhecer dígitos? A primeira
+  coisa que nós iremos precisar é um data set de onde aprender - um data set de treino. Nós iremos usar o 
+   <a href="http://yann.lecun.com/exdb/mnist/">
+    data set MNIST
+   </a>, 
+  que contém dezenas de milhares de imagens escaneadas de dígitos manuscritos, junto com com suas classificações
+  corretas. O nome MNIST vem do fato que um um subset modificado de dois data sets coletados pelo 
+  <a href="http://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology">NIST</a>,
+  Instituto Nacional de Padrões e Tecnologia dos EUA. Aqui estão algumas imagens do MNIST:
+
+</p>
+<p>
+  <center>
+    <img src="images/digits_separate.png" width="420px">
+  </center> 
+</p>
+<p>
+  Como você pode ver, esse dígitos são na verdade os mesmos daqueles mostrados <a href="#complete_zero">no começo desse capítulo</a>
+  como um desafio para reconhecer. Claro que, quando estivermos testando nossa rede, nós iremos pedir para ela reconhecer
+  dígitos que não estão no set de treino!
+</p>
+ <p>
+   O data set MNIST vem em duas partes. A primeira parte contém 60,000 imagens para serem usadas como dados de treino.
+   Essas imagens são escaneadas de amostras manuscritas de 250 pessoas, das quais metade são funcionários 
+   do Census Federal dos EUA, e a outra metade são estudantes do ensino médio. As imagens são em preto e branco de 
+   28 por 28 pixels de tamanho. Nós iremos usar os dados de teste para avaliar o quão bem nossa rede neural aprendeu
+   a reconhecer dígitos. Para fazer um bom teste de perfomance, os dados de teste foram coletados de pessoas <em>diferentes</em>
+   daquelas 250 que forneceram os dados de treino. Isso ajuda a nós dar confiança de que o nosso sistema pode reconhecer
+   dígitos de pessoas que ela nunca teve contato com a escrita.
+.</p>
+<p>
+  Nós iremos usar a notação $x$ para denotar entrada de teste. Será conveniente considerar cada input de treino $x$  como um vetor de
+  dimensão $28 \times 28 =784$.
+
+  Each entry in the vector represents the grey
 value for a single pixel in the image.  We'll denote the corresponding
 desired output by $y = y(x)$, where $y$ is a $10$-dimensional vector.
 For example, if a particular training image, $x$, depicts a $6$, then
