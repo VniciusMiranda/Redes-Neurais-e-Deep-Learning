@@ -1081,117 +1081,120 @@ uma função de ativação diferente é que os valores em particular das equaç�
    dígitos de pessoas que ela nunca teve contato com a escrita.
 .</p>
 <p>
-  Nós iremos usar a notação $x$ para denotar entrada de teste. Será conveniente considerar cada input de treino $x$  como um vetor de
-  dimensão $28 \times 28 =784$.
-
-  Each entry in the vector represents the grey
-value for a single pixel in the image.  We'll denote the corresponding
-desired output by $y = y(x)$, where $y$ is a $10$-dimensional vector.
-For example, if a particular training image, $x$, depicts a $6$, then
-$y(x) = (0, 0, 0, 0, 0, 0, 1, 0, 0, 0)^T$ is the desired output from
-the network.  Note that $T$ here is the transpose operation, turning a
-row vector into an ordinary (column) vector.</p><p>What we'd like is an algorithm which lets us find weights and biases
-so that the output from the network approximates $y(x)$ for all
-training inputs $x$.  To quantify how well we're achieving this goal
-we define a <em>cost function</em>*<span class="marginnote">
-*Sometimes referred to as a
-  <em>loss</em> or <em>objective</em> function.  We use the term cost
-  function throughout this book, but you should note the other
-  terminology, since it's often used in research papers and other
-  discussions of neural networks. </span>:
+  Nós iremos usar a notação $x$ para denotar entrada de teste. Será conveniente considerar cada input de treino $x$ como um vetor de
+  dimensão $28 \times 28 =784$. Cada entrada no vetor representa o valor cinza para um único pixel da imagem. Nós iremos denotar a saída
+  desejada correspondente por $y = y(x)$, onde $y$ é um vetor de dimensão $10$. Por exemplo, se uma imagem de treino em particular, $x$
+  representa um $6$, então $y(x) = (0, 0, 0, 0, 0, 0, 1, 0, 0, 0)^T$ é a saída desejada da rede. Note que, $T$ é a operação de transposição
+  tornando o vetor linha em um vetor coluna.
+</p>
+<p>
+  Oque nós gostariamos é um algoritmo que nos permita encontrar os pesos e biases de forma que a saída da nossa rede
+  se aproxime de $y(x)$ para todos as entradas de treino $x$. Para quantificar o quão bem nós atingimos esse objetivo
+  nós definimos uma <em>função custo</em>* 
+  <span class="marginnote"> 
+    *Algumas vezes nos referimos a ela como função <em>perda</em> ou <em>objetivo</em>. Nós usamos o termo função custo ao 
+    longo desse livro, mas você deveria ter em mente essas outras terminologias, já que é usada com frequência em artigos
+    de pesquisa e outras disscuções relacionadas a redes neurais. 
+  </span>: 
 <a class="displaced_anchor" name="eqtn6"></a>\begin{eqnarray}  C(w,b) \equiv
   \frac{1}{2n} \sum_x \| y(x) - a\|^2.
 \tag{6}\end{eqnarray}
-Here, $w$ denotes the collection of all weights in the network, $b$
-all the biases, $n$ is the total number of training inputs, $a$ is the
-vector of outputs from the network when $x$ is input, and the sum is
-over all training inputs, $x$.  Of course, the output $a$ depends on
-$x$, $w$ and $b$, but to keep the notation simple I haven't explicitly
-indicated this dependence.  The notation $\| v \|$ just denotes the
-usual length function for a vector $v$.  We'll call $C$ the
-<em>quadratic</em> cost function; it's also
-sometimes known as the <em>mean squared error</em> or just <em>MSE</em>.
-Inspecting the form of the quadratic cost function, we see that
-$C(w,b)$ is non-negative, since every term in the sum is non-negative.
-Furthermore, the cost $C(w,b)$ becomes small, i.e., $C(w,b) \approx
-0$, precisely when $y(x)$ is approximately equal to the output, $a$,
-for all training inputs, $x$.  So our training algorithm has done a
-good job if it can find weights and biases so that $C(w,b) \approx 0$.
-By contrast, it's not doing so well when $C(w,b)$ is large - that
-would mean that $y(x)$ is not close to the output $a$ for a large
-number of inputs.  So the aim of our training algorithm will be to
-minimize the cost $C(w,b)$ as a function of the weights and biases.
-In other words, we want to find a set of weights and biases which make
-the cost as small as possible.  We'll do that using an algorithm known
-as <em>gradient descent</em>.</p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p>
-Why introduce the quadratic cost?  After all, aren't we primarily
-interested in the number of images correctly classified by the
-network?  Why not try to maximize that number directly, rather than
-minimizing a proxy measure like the quadratic cost?  The problem with
-that is that the number of images correctly classified is not a smooth
-function of the weights and biases in the network.  For the most part,
-making small changes to the weights and biases won't cause any change
-at all in the number of training images classified correctly.  That
-makes it difficult to figure out how to change the weights and biases
-to get improved performance.  If we instead use a smooth cost function
-like the quadratic cost it turns out to be easy to figure out how to
-make small changes in the weights and biases so as to get an
-improvement in the cost.  That's why we focus first on minimizing the
-quadratic cost, and only after that will we examine the classification
-accuracy.</p><p></p><p>Even given that we want to use a smooth cost function, you may still
-wonder why we choose the quadratic function used in
-Equation <span id="margin_368924667121_reveal" class="equation_link">(6)</span><span id="margin_368924667121" class="marginequation" style="display: none;"><a href="chap1.html#eqtn6" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">\begin{eqnarray}  C(w,b) \equiv
-  \frac{1}{2n} \sum_x \| y(x) - a\|^2 \nonumber\end{eqnarray}</a></span><script>$('#margin_368924667121_reveal').click(function() {$('#margin_368924667121').toggle('slow', function() {});});</script>.  Isn't this a rather <em>ad
-  hoc</em> choice?  Perhaps if we chose a different cost function we'd get
-a totally different set of minimizing weights and biases?  This is a
-valid concern, and later we'll revisit the cost function, and make
-some modifications.  However, the quadratic cost function of
-Equation <span id="margin_77007455211_reveal" class="equation_link">(6)</span><span id="margin_77007455211" class="marginequation" style="display: none;"><a href="chap1.html#eqtn6" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">\begin{eqnarray}  C(w,b) \equiv
-  \frac{1}{2n} \sum_x \| y(x) - a\|^2 \nonumber\end{eqnarray}</a></span><script>$('#margin_77007455211_reveal').click(function() {$('#margin_77007455211').toggle('slow', function() {});});</script> works perfectly well for
-understanding the basics of learning in neural networks, so we'll
-stick with it for now.</p><p>Recapping, our goal in training a neural network is to find weights
-and biases which minimize the quadratic cost function $C(w, b)$.  This
-is a well-posed problem, but it's got a lot of distracting structure
-as currently posed - the interpretation of $w$ and $b$ as weights
-and biases, the $\sigma$ function lurking in the background, the
-choice of network architecture, MNIST, and so on.  It turns out that
-we can understand a tremendous amount by ignoring most of that
-structure, and just concentrating on the minimization aspect.  So for
-now we're going to forget all about the specific form of the cost
-function, the connection to neural networks, and so on.  Instead,
-we're going to imagine that we've simply been given a function of many
-variables and we want to minimize that function.  We're going to
-develop a technique called <em>gradient descent</em> which can be used
-to solve such minimization problems.  Then we'll come back to the
-specific function we want to minimize for neural networks.</p><p>Okay, let's suppose we're trying to minimize some function, $C(v)$.
-This could be any real-valued function of many variables, $v = v_1,
-v_2, \ldots$.  Note that I've replaced the $w$ and $b$ notation by $v$
-to emphasize that this could be any function - we're not
-specifically thinking in the neural networks context any more.  To
-minimize $C(v)$ it helps to imagine $C$ as a function of just two
-variables, which we'll call $v_1$ and $v_2$:</p><p><center><img src="images/valley.png" width="542px"></center></p><p>What we'd like is to find where $C$ achieves its global minimum.  Now,
-of course, for the function plotted above, we can eyeball the graph
-and find the minimum.  In that sense, I've perhaps shown slightly
-<em>too</em> simple a function! A general function, $C$, may be a
-complicated function of many variables, and it won't usually be
-possible to just eyeball the graph to find the minimum.</p><p>One way of attacking the problem is to use calculus to try to find the
-minimum analytically.  We could compute derivatives and then try using
-them to find places where $C$ is an extremum.  With some luck that
-might work when $C$ is a function of just one or a few variables.  But
-it'll turn into a nightmare when we have many more variables.  And for
-neural networks we'll often want <em>far</em> more variables - the
-biggest neural networks have cost functions which depend on billions
-of weights and biases in an extremely complicated way.  Using calculus
-to minimize that just won't work!</p><p>(After asserting that we'll gain insight by imagining $C$ as a
-function of just two variables, I've turned around twice in two
-paragraphs and said, "hey, but what if it's a function of many more
-than two variables?"  Sorry about that.  Please believe me when I say
-that it really does help to imagine $C$ as a function of two
-variables.  It just happens that sometimes that picture breaks down,
-and the last two paragraphs were dealing with such breakdowns.  Good
-thinking about mathematics often involves juggling multiple intuitive
-pictures, learning when it's appropriate to use each picture, and when
-it's not.)</p><p><a name="gradient_descent"></a></p><p>Okay, so calculus doesn't work.  Fortunately, there is a beautiful
+Nesta equação, $w$ denota a coleção de todos os pesos na rede, $b$ todos os biases, $n$ é o número total de entradas de
+treino, $a$ é o vetor de saídas da rede quando $x$ é a entrada, e a soma é sobre todos as entradas de treino, $x$. Claro,
+a saída $a$ depende de $x$, $w$ e $b$, mas para manter a notação simples eu não explicitamente indiquei essa dependência.
+A notação $\| v \|$ apenas denota o tamanho usual da função para um determinado vetor $v$. Nós iremos chamar $C$ de função
+de custo <em>quadrática</em>; também é conhecida como o<em>erro médio ao quadrado</em> ou apenas <em>MSE(mean squared error)</em>.
+Inspecionando a forma da função de custo quadrática, nós vemos que $C(w, b)$ é não negativo, já que todo termo da soma é não 
+negativo. Além disso, o custo $C(w, b)$ se torna menor, i.e., $C(w, b) \approx 0$, exatamente quando $y(x)$ é aproximadamente
+igual a saída, $a$, para todos os valores de entrada, $x$. Então nosso algoritmo de treino faz um bom trabalho se ele consegue
+achar os pesos e biases de modo que $C(w,b) \appox 0$. Em contraste, ele não está fazendo um bom trabalho se $C(w, b)$ é grande
+- isso significaria que $y(x)$ não está próximo da saída $a$ para uma grande parte das entradas. Então o objetivo do nosso algoritmo
+de treino será minimizar a função custo $C(w, b)$ como um função em termos dos pesos e biases. Em outras palavras, nós queremos
+achar o conjunto de pesos e biases que faça a função custo assumir o menor valor possível. Nós fazemos isso usando um algoritimo
+chamado <em>gradiente descendente</em>.
+</p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+<p>
+  Porque introduzir a função quadrática? Afinal, não seria o interesse primário no número de imagens classificadas corretamente
+  pela rede? Porque não tentar maximizar esse número diretamente, envés de minimizar um valor indireto como o custo quadrático?
+  O problema com isso é que o número de imagens corretamente classificadas não é uma função suave dos pesos e biases da rede. Na
+  maioria das vezes, fazer pequenas mudanças nos pesos e biases não irá causar nenhuma mudança no número de imagens de treino
+  classificadas corretamente. Isso torna difícil descobrir como as mudanças nos pesos e biases estão afetando o desempenho da nossa
+  rede, e portanto, fica difícil descobrir como nós podemos mudar esses pesos e biases de modo que melhore o desenpenho. Usando uma
+  função suave, como a função custo quadrático, torna-se mais fácil o trabalho de descobrir como fazer pequenas mudanças nos pesos 
+  e biases para melhorar o custo. Por conta disso que nós focamos primeiramente em minimizar o custo quadrático, e apenas depois nós
+  examinamos a precisão de classificação.  
+</p>
+<p></p>
+<p>
+  Mesmo já definido que nós iremos usar uma função de custo suave, talvez você ainda se pergunte, porque nós escolhemos a função quadrática
+  usada na equação
+<span id="margin_368924667121_reveal" class="equation_link">(6)</span>
+<span id="margin_368924667121" class="marginequation" style="display: none;">
+  <a href="chap1.html#eqtn6" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">
+    \begin{eqnarray}  C(w,b) \equiv\frac{1}{2n} \sum_x \| y(x) - a\|^2 \nonumber\end{eqnarray}
+  </a>
+</span>
+<script>$('#margin_368924667121_reveal').click(function() {$('#margin_368924667121').toggle('slow', function() {});});</script>.  
+Não seria essa escolha <em>ad hoc</em>? Talvez, se escolhida uma função custo diferente nós teríamos um conjunto de pesos e biases minimizados
+completamente diferente? Essa é uma preocupação válida, mais tarde no livro iremos revisitar a função custo, e faremos algumas modificações. 
+No entanto, a função de custo quadrática da equação 
+<span id="margin_77007455211_reveal" class="equation_link">
+  (6)
+</span>
+<span id="margin_77007455211" class="marginequation" style="display: none;">
+  <a href="chap1.html#eqtn6" style="padding-bottom: 5px;" onMouseOver="this.style.borderBottom='1px solid #2A6EA6';" onMouseOut="this.style.borderBottom='0px';">\begin{eqnarray}  C(w,b) \equiv
+  \frac{1}{2n} \sum_x \| y(x) - a\|^2 \nonumber\end{eqnarray}</a></span><script>$('#margin_77007455211_reveal').click(function() {$('#margin_77007455211').toggle('slow', function() {});});</script> 
+
+funciona perfeitamente bem para entender os basicos de aprendizado em uma rede neural, tão bem que nós iremos nos ater a ela por enquanto.
+</p>
+<p>
+  Recapitulando, nosso objetivo é treinar uma rede neural para encontrar os pesos e biases que minimizam a função de custo quadrático
+  $C(w, b)$. Esse é um problema bem posto, mas existem muitas estruturas que podem causar distração na forma como o problema está posto 
+  atualmente - a interpretação de $w$ e $b$ como pesos e biases, a função $\sigma$ sendo utilizada no background, a escolha da arquitetura
+  da rede, MNIST, e assim vai. Acontece que nós podemos entender muito apenas ignorando boa parte dessa estrutura, e concentrando na parte
+  da minimização. Nós iremos desenvolver uma técnica chamada <em>gradiente descendente</em> que nós podemos usar para resolver esses problemas. 
+  Então iremos voltar para a função específica que queremos minimizar para redes neurais.
+</p> 
+<p>
+  Certo, vamos supor que estamos tentando minimizar uma função, $C(v)$. Essa poderia ser qualquer função de valor real de muitas variáveis,
+  #v = v_1, v_2, \ldots$. Note que eu coloquei a notação de $w$ e $b$ como $v$ para enfatizar que essa poderia ser qualquer função - nós não
+  estamos mais pensando no contexto específico de redes neurais dessa vez. Para minimizar $C(v)$ ajuda se imaginarmos $C$ como uma função de 
+  apenas duas variáveis, que nós iremos chamar $v_1$ e $v_2$:
+</p> 
+<p>
+  <center>
+    <img src="images/valley.png" width="542px">
+  </center>
+</p>
+<p>
+  O que nós gostaríamos de achar é onde $C$ atinge seu mínimo global. Agora, para a função que plotamos acima, nós podemos procurar a olho nu
+  o mínimo da função. Nesse sentido, Talvez eu tenha mostrado essa função de maneira <em>muito</em> simples! Uma função geral, $C$, pode ser
+  uma função complicada de muitas variáveis, e normalmente não será possível apenas achar o mínimo da função olhando pro gráfico a olho nu.  
+</p>
+<p>
+  Uma maneira de abordar esse problema é usando cálculo para tentar achar o mínimo analiticamente. Nós poderíamos calcular as derivadas e então
+  tentar usar elas para achar os lugares em $C$ que são extremos. Com um pouco e sorte talvez funcione quando $C$ é uma função de apenas uma ou 
+  várias variáveis. Mas irá se tornar um pesadelo quando nós temos muitas variáveis. E para redes neurais quase sempre nós iremos trabalhar com
+  <em>muitas</em> variáveis - a maior rede neural tem funções custo que dependem de bilhões de pesos e biases. Usando cálculo para minimizar essa
+  função simplemente não funcionaria.
+</p>
+<p>
+  (Após definido que nós iriamos ganhar entendimento se imaginassemos $C$ como uma fução de apenas duas variáveis, eu voltei atrás duas vezes
+  em dois parágrafos e disse "ei, mas e se for uma função de mais de duas variáveis?" desculpa por isso. Por favor acredite em mim quando digo 
+  que realmente ajuda se nós imaginarmos $C$ como uma função de duas variáveis. Só ocorre que algumas vezes essa abordagem quebra e nos dois 
+  últimos parágrafos nós estamos lidando com isso. Um bom pensamento matemático muitas vezes envolve trabalhar com várias abordagens intuitivas,
+  aprendendo quando é mais apropriado usar cada abordagem, e quando não é.)
+</p>
+<p>
+  <a name="gradient_descent"></a>
+</p>
+<p>
+  Certo, então cálculo não funciona. Felizmente, exite outra linda analogia que sugere um algoritimo que funciona muito bem. Nós começamos
+  pensando na nossa função como se fosse um vale. Se você olhar bem um pouco para o plot acima, não deve ser tão difícil. Nossa experiência
+  do dia a dia diz que uma bola vai eventualmente rolar para o fundo de um vale. Será que nós poderiamos usar essa ideia para achar o mínimo da
+  função? Nós aleatóriamente escolhemos um ponto inicial para uma bola (imaginária), e então simulamos a movimentação da bola quando ela rola para
+  o fundo do vale.
+  Okay, so calculus doesn't work.  Fortunately, there is a beautiful
 analogy which suggests an algorithm which works pretty well.  We start
 by thinking of our function as a kind of a valley.  If you squint just
 a little at the plot above, that shouldn't be too hard.  And we
