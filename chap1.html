@@ -1193,53 +1193,39 @@ funciona perfeitamente bem para entender os basicos de aprendizado em uma rede n
   pensando na nossa função como se fosse um vale. Se você olhar bem um pouco para o plot acima, não deve ser tão difícil. Nossa experiência
   do dia a dia diz que uma bola vai eventualmente rolar para o fundo de um vale. Será que nós poderiamos usar essa ideia para achar o mínimo da
   função? Nós aleatóriamente escolhemos um ponto inicial para uma bola (imaginária), e então simulamos a movimentação da bola quando ela rola para
-  o fundo do vale.
-  Okay, so calculus doesn't work.  Fortunately, there is a beautiful
-analogy which suggests an algorithm which works pretty well.  We start
-by thinking of our function as a kind of a valley.  If you squint just
-a little at the plot above, that shouldn't be too hard.  And we
-imagine a ball rolling down the slope of the valley.  Our everyday
-experience tells us that the ball will eventually roll to the bottom
-of the valley.  Perhaps we can use this idea as a way to find a
-minimum for the function?  We'd randomly choose a starting point for
-an (imaginary) ball, and then simulate the motion of the ball as it
-rolled down to the bottom of the valley.  We could do this simulation
-simply by computing derivatives (and perhaps some second derivatives)
-of $C$ - those derivatives would tell us everything we need to know
-about the local "shape" of the valley, and therefore how our ball
-should roll.</p><p>Based on what I've just written, you might suppose that we'll be
-trying to write down Newton's equations of motion for the ball,
-considering the effects of friction and gravity, and so on.  Actually,
-we're not going to take the ball-rolling analogy quite that seriously
-- we're devising an algorithm to minimize $C$, not developing an
-accurate simulation of the laws of physics!  The ball's-eye view is
-meant to stimulate our imagination, not constrain our thinking.  So
-rather than get into all the messy details of physics, let's simply
-ask ourselves: if we were declared God for a day, and could make up
-our own laws of physics, dictating to the ball how it should roll,
-what law or laws of motion could we pick that would make it so the
-ball always rolled to the bottom of the valley?</p><p>To make this question more precise, let's think about what happens
-when we move the ball a small amount $\Delta v_1$ in the $v_1$
-direction, and a small amount $\Delta v_2$ in the $v_2$ direction.
-Calculus tells us that $C$ changes as follows:
+  o fundo do vale. Nós poderiamos fazer essa simulação simplesmente calculando as derivadas (e talvez algumas segundas derivadas) de $C$ - essas 
+  derivadas que irão nos dizer tudo que nós precisamos saber sobre a "forma" de um determinado local desse vale, e portanto como nossa bola deve 
+  rolar.
+</p>
+<p>
+  Basseado no que eu acabei de escrever, você deve supor que nós iremos tentar escrever as equações de movimento de uma bola de Newton, considerando
+  os efeitos de atrito, gravidade e etc. Na verdade, nós não iremos tomar a analogia da bola rolando tão sério assim - nós estamos desenvolvendo um 
+  algoritmo para minimizar $C$, e não desenvolvendo uma simulação de leis da física! A visão da bola rolando é apenas um meio de estimular a sua 
+  imaginação, e não limitar o seu pensamento. Então envés de entrar nos detalhes da física, vamos simplismente nós perguntar: se nós fossemos deus por
+  um dia, e pudessemos fazer nossas próprias leis da física, ditando como a bola iria rolar, que lei ou leis do movimento nós poderiamos pegar que faria
+  com que a bola movesse para o fundo do vale?
+</p>
+<p>
+  Para tornar essa pergunta mais precisa, vamos pensar sobre o que acontece quando nós movemos a bola pequenas quantidades $\Delta v_1$ na direção $v_1$,
+  e uma pequena quantidade $\Delta v_2$ na direção $v_2$. O cálculo nos di\ que $C$ muda da seguinte maneira:
 <a class="displaced_anchor" name="eqtn7"></a>\begin{eqnarray} 
   \Delta C \approx \frac{\partial C}{\partial v_1} \Delta v_1 +
   \frac{\partial C}{\partial v_2} \Delta v_2.
 \tag{7}\end{eqnarray}
-We're going to find a way of choosing $\Delta v_1$ and $\Delta v_2$ so
-as to make $\Delta C$ negative; i.e., we'll choose them so the ball is
-rolling down into the valley.  To figure out how to make such a choice
-it helps to define $\Delta v$ to be the vector of changes in $v$,
-$\Delta v \equiv (\Delta v_1, \Delta v_2)^T$, where $T$ is again the
-transpose operation, turning row vectors into column vectors.  We'll
-also define the <em>gradient</em> of $C$
-to be the vector of partial derivatives, $\left(\frac{\partial
-    C}{\partial v_1}, \frac{\partial C}{\partial v_2}\right)^T$.  We
-denote the gradient vector by $\nabla C$, i.e.:
+Nós iremos encontrar uma maneria de escolher $\Delta v_1$ e $\Delta v_2$ de forma que faça $\Delta C$ negativo; i.e., nós iremos escolher eles de forma que a 
+bola role para o fundo do vale. Para entender como fazer tal escolha ajuda se definirmos %\Delta v$ como sendo o vetor das mudanças em $v$, $\Delta v \equiv 
+(\Delta v_1, \Delta v_2)^T$, onde $T$ novamente é o operador de transposição, tornando vetores linha em vetores coluna. Nós iremos definir também o <em>gradiente</em>
+de $C$ como sendo um vetor das derivadas parciais, $\left(\frac{\partial C}{\partial v_1}, \frac{\partial C}{\partial v_2}\right)^T$. Denotamos o gradiente como sendo
+$\nabla C$, i.e.:
 <a class="displaced_anchor" name="eqtn8"></a>\begin{eqnarray} 
   \nabla C \equiv \left( \frac{\partial C}{\partial v_1}, 
   \frac{\partial C}{\partial v_2} \right)^T.
 \tag{8}\end{eqnarray}
+
+Daqui a pouco iremos rescrever a mudança $\Delta C$ em termos de $\Delta v$ e de do gradiente, $\nabla C$. Antes de fazermos isso, eu quero deixar claro uma coisa que as vezes
+confunde as pessoas quanto ao gradiente. Quando as pessoas encontram a notação $\nabla C$ pela primeira vez, as pessoas as vezes se preguntam, o que $\nabla$ realmente significa?
+Na verdade, é perfeitamente tranquilo de pensar em $\nabla C$ como sendo um objeto matemático singular - o vetor definido acima - que por acaso está sendo escrito usando dois simbolos.
+
 In a moment we'll rewrite the change $\Delta C$ in terms of $\Delta v$
 and the gradient, $\nabla C$.  Before getting to that, though, I want
 to clarify something that sometimes gets people hung up on the
