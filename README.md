@@ -1,7 +1,6 @@
-# Redes Neurais e Deep Learning
+# neural Networks e Deep Learning
 
-Besides portugal, the portuguese language is spoken in countries where the access to english classes is limited by economic differences, so they are limited with the knowledge available on the portuguese language.
+Besides Portugal, on most of the countries where the portuguese language is spoken economic hardship is common between it's citizens. Therefore, the access to content that are not in their native language is limited, given that english classes are rather expensive in these countries.
 
-Therefore, this project was created with the objective to contribue with the accessibility of knowledge, in the area of neural networks and deep learning, 
-for the people that live on these countries, by translating the excelent book [neural networks and deep learning](http://neuralnetworksanddeeplearning.com/) by [Michael Nielsen](https://twitter.com/michael_nielsen) to the portuguese language.
+Having this in mind, this project was created with the objective of making the book [neural networks and deep learning](http://neuralnetworksanddeeplearning.com/) by [Michael Nielsen](https://twitter.com/michael_nielsen) easily accessible for portuguese speakers by translating it.
 
